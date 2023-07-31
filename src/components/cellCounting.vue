@@ -1,15 +1,27 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 
+// 表单数据
 const cellCounted = reactive([
     { concentration: ref(2), indexes: ref(5), combinationCounted: ref(''), motilityRate: ref(100), CakingRate: ref(0), volume: ref(40), totalCells: ref() },
 ])
 
-// 组合细胞浓度
-const combination = () => {
+// 获取当前总细胞数
+const totalCellCount = ref()
 
-}
-
+// 计算能接种几个培养瓶
+// 五层
+const fiveLayer = computed(() => {
+    return Math.ceil(totalCellCount.value / 8750000)
+})
+// 十层
+const tenLayer = computed(() => {
+    return Math.ceil(totalCellCount.value / 63200000)
+})
+// T150
+const T150 = computed(() => {
+    return Math.ceil(totalCellCount.value / 150)
+})
 
 // 自动计算细胞数量
 const autoCount = (item) => {
@@ -34,7 +46,6 @@ const removeCounted = (item) => {
 // 自动求平均值
 const getSverageValue = (param) => {
     const { columns, data } = param
-    console.log(data)
     const sums = []
     columns.forEach((column, index) => {
         if (index === 0) {
@@ -43,16 +54,22 @@ const getSverageValue = (param) => {
         }
         const values = data.map((item) => Number(item[column.property]))
         let sum = 0;
-        if (index === 1 || index === 5) {
+        if (index === 1) {
             values.forEach(item => {
-            sum += item;
-        })
-        sums[index] = (sum / values.length).toExponential(2);
+                sum += item;
+            })
+            sums[index] = (sum / values.length).toExponential(2);
+        } else if (index === 5) {
+            values.forEach(item => {
+                sum += item;
+            })
+            totalCellCount.value = sum;
+            sums[index] = (sum / values.length).toExponential(2);
         } else {
             values.forEach(item => {
-            sum += item;
-        })
-        sums[index] = (sum / values.length);
+                sum += item;
+            })
+            sums[index] = (sum / values.length);
         }
     })
     return sums
@@ -61,7 +78,7 @@ const getSverageValue = (param) => {
 
 <template>
     <el-row class="cellCounting">
-        <el-col class="countInput" :span="12">
+        <el-col class="countInput">
             <el-form :model="cellCounted" label-position="top">
                 <el-form-item label="计数结果" v-for="(item, index) in cellCounted" :key="index">
                     <el-col class="infoInput">
@@ -93,11 +110,11 @@ const getSverageValue = (param) => {
                         <el-button type="danger" round @click="removeCounted(item)">删除</el-button>
                     </el-col>
                 </el-form-item>
-                {{ cellCounted }}
+                <!-- {{ cellCounted }} -->
             </el-form>
             <el-button type="primary" @click="addCounted">+</el-button>
         </el-col>
-        <el-col class="countShow" :span="12">
+        <el-col class="countShow">
             <el-table :data="cellCounted" show-summary :summary-method="getSverageValue">
                 <el-table-column type="index" :index="indexMethod" />
                 <el-table-column prop="combinationCounted" label="细胞浓度(cells/mL)"></el-table-column>
@@ -106,6 +123,19 @@ const getSverageValue = (param) => {
                 <el-table-column prop="volume" label="体积(mL)"></el-table-column>
                 <el-table-column prop="totalCells" label="总数(cells)"></el-table-column>
             </el-table>
+            <el-divider />
+            <el-card class="howMuchLayer">
+                <template #header>
+                    <div class="card-header">
+                        <span>可以种多少瓶培养瓶(向上取整)</span>
+                    </div>
+                </template>
+                <el-tag>五层培养瓶：{{ fiveLayer }}</el-tag>
+                <el-divider direction="vertical" />
+                <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}</el-tag>
+                <el-divider direction="vertical" />
+                <el-tag class="ml-2" type="warning">T150：{{ T150 }}</el-tag>
+            </el-card>
         </el-col>
     </el-row>
 </template>
