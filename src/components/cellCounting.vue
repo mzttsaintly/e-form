@@ -20,7 +20,7 @@ const tenLayer = computed(() => {
 })
 // T150
 const T150 = computed(() => {
-    return Math.ceil(totalCellCount.value / 150)
+    return Math.ceil(totalCellCount.value / 1500000)
 })
 
 // 自动计算细胞数量
@@ -79,36 +79,37 @@ const getSverageValue = (param) => {
 <template>
     <el-row class="cellCounting">
         <el-col class="countInput">
+
             <el-form :model="cellCounted" label-position="top">
-                <el-form-item label="计数结果" v-for="(item, index) in cellCounted" :key="index">
-                    <el-col class="infoInput">
+                <el-form-item v-for="(item, index) in cellCounted" :key="index">
+                    <el-row class="infoInput">
                         <el-tag>细胞浓度(cells/mL)</el-tag>
                         <el-input-number v-model="item.concentration" clearable placeholder="细胞浓度" :precision="2"
                             :step="0.1" :max="10" :min="0" @change="autoCount(cellCounted[index])"></el-input-number>
                         E
                         <el-input-number v-model="item.indexes" clearable placeholder="指数" :step="1"
                             @change="autoCount(cellCounted[index])"></el-input-number>
-                    </el-col>
-                    <el-col class="infoInput">
+
+                        <el-divider direction="vertical" />
                         <el-tag>细胞活率(%)</el-tag>
                         <el-input-number v-model="item.motilityRate" clearable placeholder="细胞活率" :precision="1" :step="0.1"
                             :max="100" :min="0"></el-input-number>
-                    </el-col>
 
-                    <el-col class="infoInput">
+
+                        <el-divider direction="vertical" />
                         <el-tag>结团率(%)</el-tag>
                         <el-input-number v-model="item.CakingRate" clearable placeholder="结团率" :precision="1" :step="1"
                             :max="100" :min="0"></el-input-number>
-                    </el-col>
 
-                    <el-col class="infoInput">
+
+                        <el-divider direction="vertical" />
                         <el-tag>体积(mL)</el-tag>
                         <el-input-number v-model="item.volume" clearable placeholder="体积" :precision="1" :step="1" :min="0"
                             @change="autoCount(cellCounted[index])"></el-input-number>
-                    </el-col>
-                    <el-col class="infoInput" :span="3">
+
+                        <el-divider direction="vertical" />
                         <el-button type="danger" round @click="removeCounted(item)">删除</el-button>
-                    </el-col>
+                    </el-row>
                 </el-form-item>
                 <!-- {{ cellCounted }} -->
             </el-form>
@@ -130,11 +131,11 @@ const getSverageValue = (param) => {
                         <span>可以种多少瓶培养瓶(向上取整)</span>
                     </div>
                 </template>
-                <el-tag>五层培养瓶：{{ fiveLayer }}</el-tag>
+                <el-tag>五层培养瓶：{{ fiveLayer }}个</el-tag>
                 <el-divider direction="vertical" />
-                <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}</el-tag>
+                <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}个</el-tag>
                 <el-divider direction="vertical" />
-                <el-tag class="ml-2" type="warning">T150：{{ T150 }}</el-tag>
+                <el-tag class="ml-2" type="warning">T150：{{ T150 }}个</el-tag>
             </el-card>
         </el-col>
     </el-row>
