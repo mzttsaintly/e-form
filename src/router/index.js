@@ -5,18 +5,30 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      // path: '/',
-      // name: 'home',
-      // component: HomeView
+      path: '/addMaterial',
+      name: 'addMaterial',
+      component: () => import('../components/addMaterial.vue')
     },
     {
-      // path: '/about',
-      // name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      // component: () => import('../views/AboutView.vue')
-    }
+      path: '/addEquipment',
+      name: 'addEquipment',
+      component: () => import('../components/addEquipment.vue')
+    },
+    {
+      path: '/cellCounting',
+      name: 'cellCounting',
+      component: () => import('../components/cellCounting.vue')
+    },
+    {
+      path: '/materialNotarise',
+      name: 'materialNotarise',
+      component: () => import('../components/materialNotarise.vue')
+    },
+    {
+      path: '/equipmentNotarise',
+      name: 'equipmentNotarise',
+      component: () => import('../components/equipmentNotarise.vue')
+    },
   ]
 })
 

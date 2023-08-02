@@ -1,5 +1,7 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, onBeforeMount } from 'vue';
+import baseUrl from '../assets/apilink.json';
+import axios from 'axios';
 
 // 循环表单中的内容
 const materials = reactive([
@@ -73,7 +75,15 @@ const autoFill = (item) => {
     })
 }
 
+// 获取物料列表链接
+const getMaterialUrl = baseUrl['baseUrl'] + 'queryMaterial'
+
 const loadMaterialName = () => {
+    let materialList = []
+    axios.post(getMaterialUrl).then((response) => {
+        
+    })
+    
     return [
         { value: '50mL离心管', lot: [{ value: '06023601', POV: '2028-02-28' }, { value: '06023061', POV: '2028-05-28' }] },
         { value: '250mL离心管', lot: [{ value: '298023601', POV: '2025-10-25' }] },
@@ -83,6 +93,7 @@ const loadMaterialName = () => {
 }
 
 onMounted(() => {
+    // console.log(getMaterialUrl)
     materialList.value = loadMaterialName()
 })
 </script>

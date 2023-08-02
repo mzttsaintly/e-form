@@ -83,7 +83,7 @@ const getSverageValue = (param) => {
             <el-form :model="cellCounted" label-position="top">
                 <el-form-item v-for="(item, index) in cellCounted" :key="index">
                     <el-row class="infoInput">
-                        <el-tag>细胞浓度(cells/mL)</el-tag>
+                        <el-tag disable-transitions="true">细胞浓度(cells/mL)</el-tag>
                         <el-input-number v-model="item.concentration" clearable placeholder="细胞浓度" :precision="2"
                             :step="0.1" :max="10" :min="0" @change="autoCount(cellCounted[index])"></el-input-number>
                         E
@@ -91,19 +91,19 @@ const getSverageValue = (param) => {
                             @change="autoCount(cellCounted[index])"></el-input-number>
 
                         <el-divider direction="vertical" />
-                        <el-tag>细胞活率(%)</el-tag>
+                        <el-tag disable-transitions="true">细胞活率(%)</el-tag>
                         <el-input-number v-model="item.motilityRate" clearable placeholder="细胞活率" :precision="1" :step="0.1"
                             :max="100" :min="0"></el-input-number>
 
 
                         <el-divider direction="vertical" />
-                        <el-tag>结团率(%)</el-tag>
+                        <el-tag disable-transitions="true">结团率(%)</el-tag>
                         <el-input-number v-model="item.CakingRate" clearable placeholder="结团率" :precision="1" :step="1"
                             :max="100" :min="0"></el-input-number>
 
 
                         <el-divider direction="vertical" />
-                        <el-tag>体积(mL)</el-tag>
+                        <el-tag disable-transitions="true">体积(mL)</el-tag>
                         <el-input-number v-model="item.volume" clearable placeholder="体积" :precision="1" :step="1" :min="0"
                             @change="autoCount(cellCounted[index])"></el-input-number>
 

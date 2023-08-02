@@ -11,7 +11,9 @@ class Material(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     material_name = db.Column(db.String())  # 物料名称
     material_lot = db.Column(db.String())  # 物料批号
-    material_EOV = db.Column(db.DateTime)  # 有效期
+    material_EOV = db.Column(db.String())  # 有效期
+
+    __table_args__ = (db.UniqueConstraint('material_name', 'material_lot'), )
 
 
 class Equipments(db.Model):
@@ -21,6 +23,8 @@ class Equipments(db.Model):
     equipName = db.Column(db.String())  # 设备名称
     equipNum = db.Column(db.String())  # 设备编号
     place = db.Column(db.String())  # 设备存放地点
+
+    __table_args__ = (db.UniqueConstraint('equipName', 'equipNum'), )
 
 
 def add_material(material_name, material_lot, material_EOV):

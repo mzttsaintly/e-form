@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 from loguru import logger
 import os
@@ -35,7 +34,11 @@ def materials_to_json(item):
 
 
 @app.route("/queryMaterial", methods=['POST'])
-def queryMaterial():
+def query_material():
+    """
+    获取物料信息
+    :return: 所有的物料信息json
+    """
     res = queryMaterial()
     return materials_to_json(res)
 
@@ -52,24 +55,43 @@ def equipments_to_json(item):
 
 
 @app.route("/queryEquipments", methods=["POST"])
-def queryEquipments():
+def query_equipments():
+    """
+    获取设备信息
+    :return: 所有的设备信息json
+    """
     res = queryEquipments()
     return equipments_to_json(res)
 
 
 @app.route("/add_Material", methods=["POST"])
 def add_Material():
-    material_name = request.json.get('material_name')
-    material_lot = request.json.get('material_lot')
-    material_EOV = request.json.get('material_EOV')
-    res = add_material(material_name, material_lot, material_EOV)
-    return res
+    """
+    添加物料信息
+    :return: 添加的结果列表
+    """
+    res_list = []
+    json_list = request.json
+    for js in json_list:
+        material_name = js['material_name']
+        material_lot = js['material_lot']
+        material_EOV = js['material_EOV']
+        res_list.append(add_material(material_name, material_lot, material_EOV))
+    return dumps(res_list, ensure_ascii=False)
 
 
 @app.route("/add_Equipments", methods=["POST"])
 def add_Equipments():
-    equipName = request.json.get('equipName')
-    equipNum = request.json.get('equipNum')
-    place = request.json.get('place')
-    res = add_material(equipName, equipNum, place)
-    return res
+    """
+    添加设备信息
+    :return: 添加的结果列表
+    """
+    res_list = []
+    json_list = request.json
+    for js in json_list:
+        equipName = js['equipName']
+        equipNum = js['equipNum']
+        place = js['place']
+        res_list.append(add_equipments(equipName, equipNum, place))
+    return dumps(res_list, ensure_ascii=False)
+

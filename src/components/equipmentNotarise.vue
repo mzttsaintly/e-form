@@ -1,5 +1,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
+import baseUrl from '../assets/apilink.json';
+import axios from 'axios';
 
 // 循环表单中的内容
 const equipment = reactive([
@@ -65,24 +67,55 @@ const querySearchEquipNum = (queryString, cb) => {
     cb(results)
 }
 
+const getEquipmentUrl = baseUrl['baseUrl'] + 'queryEquipments'
 
-const loadEquipmentName = () => {
-    return [
-        { value: '生物安全柜', num: [{ value: "PD022-D" }, { value: "PD029-D" }] },
-        { value: '超净工作台', num: [{ value: "PD023-D" }, { value: "PD030-D" }] },
-        { value: '细胞计数仪', num: [{ value: "QC016-A" }] },
-        { value: '二氧化碳培养箱', num: [{ value: "PD022-A" }, { value: "PD022-B" }, { value: "PD022-C" }, { value: "PD022-D" }] },
-        { value: '倒置显微镜', num: [{ value: "PD027-C" }, { value: "PD027-D" }] },
-        { value: '电动移液器', num: [{ value: "245423" }, { value: "245418" }] },
-        { value: '高速离心机', num: [{ value: "PD025-A" }] },
-        { value: '恒温水浴锅', num: [{ value: "RD003-A" }] },
-        { value: '液氮罐', num: [{ value: "RD020-A" }] },
-        { value: '-80℃冰箱', num: [{ value: "RD021-A" }] },
-    ]
+// 临时存储从服务器获取的数据
+let severData = []
+
+// 从服务器获取数据
+const getSeverData = async () => {
+    await axios.post(getEquipmentUrl).then(
+        (response) => {
+            severData = response.data;
+            // console.log(severData)
+        }
+    ).catch((err) => {
+        ElMessageBox.alert(err, '服务器错误', {
+            confirmButtonText: 'OK',
+        })
+        console.log(err)
+    })
 }
 
-onMounted(() => {
-    equipmentName.value = loadEquipmentName()
+// 先搜索有几种设备名称
+const EquipmentNameMap = new Map()
+
+const getEquipmentNameMap = async () => {
+    severData.forEach((item) => {
+        EquipmentNameMap.set(item['equipName'], 1)
+    })
+    // console.log(EquipmentNameMap)
+}
+
+// 根据设备种类重新加载
+const loadEquipmentName = async () => {
+    let res = []
+    for (let [key, value] of EquipmentNameMap) {
+        let tempItem = {value: key, num: []}
+        severData.forEach((item) => {
+            if (item['equipName'] === key) {
+                tempItem.num.push({value: item.equipNum})
+            }
+        })
+        res.push(tempItem)
+    }
+    return res
+}
+
+onMounted(async () => {
+    await getSeverData()
+    await getEquipmentNameMap()
+    equipmentName.value = await loadEquipmentName()
 })
 </script>
 
@@ -130,7 +163,7 @@ onMounted(() => {
             </el-col>
 
         </el-row>
-        <!-- {{ equipment }} -->
+        <!-- {{ severData }} -->
     </el-form>
 </template>
 
