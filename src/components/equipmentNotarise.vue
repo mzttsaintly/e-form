@@ -130,7 +130,7 @@ onMounted(() => {
             </el-col>
 
         </el-row>
-        {{ equipment }}
+        <!-- {{ equipment }} -->
     </el-form>
 </template>
 

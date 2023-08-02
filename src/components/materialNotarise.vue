@@ -131,7 +131,7 @@ onMounted(() => {
                 <el-button type="primary" @click="addMaterial">+</el-button>
             </el-col>
         </el-row>
-        {{ materials }}
+        <!-- {{ materials }} -->
     </el-form>
 </template>
 
