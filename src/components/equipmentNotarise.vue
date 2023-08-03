@@ -5,12 +5,12 @@ import axios from 'axios';
 
 // 循环表单中的内容
 const equipment = reactive([
-    { equipName: ref(''), equipNum: ref(''), availability: ref() }
+    { equipName: ref(''), equipNum: ref(''), place: ref(''), availability: ref(1) }
 ])
 
 // 新增项目
 const addEquipment = () => {
-    equipment.push({ equipName: ref(''), equipNum: ref(''), availability: ref() })
+    equipment.push({ equipName: ref(''), equipNum: ref(''), place: ref(''), availability: ref(1) })
 }
 
 // 删除项目
@@ -67,6 +67,11 @@ const querySearchEquipNum = (queryString, cb) => {
     cb(results)
 }
 
+// 选取设备编号时自动显示设备记录的存放位置
+const autoShowPlace = (item) => {
+    templist.value
+}
+
 const getEquipmentUrl = baseUrl['baseUrl'] + 'queryEquipments'
 
 // 临时存储从服务器获取的数据
@@ -104,7 +109,7 @@ const loadEquipmentName = async () => {
         let tempItem = {value: key, num: []}
         severData.forEach((item) => {
             if (item['equipName'] === key) {
-                tempItem.num.push({value: item.equipNum})
+                tempItem.num.push({value: item.equipNum, place: item.place})
             }
         })
         res.push(tempItem)
@@ -136,18 +141,21 @@ onMounted(async () => {
             <el-col :span="24">
                 <el-form-item class="notariseItem" v-for="(item, index) in equipment" :key="index">
                     <el-col class="infoInput" :span="7">
-                        <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="请输入设备名称"
+                        <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="设备名称"
                             v-model="item.equipName">
                             <!-- 设备名称 -->
                         </el-autocomplete>
                     </el-col>
-                    <el-col class="infoInput" :span="7">
-                        <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="请输入设备编号"
+                    <el-col class="infoInput" :span="4">
+                        <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="设备编号"
                             v-model="item.equipNum" @focus="focusNum(equipment[index].equipName)">
                             <!-- 设备编号 -->
                         </el-autocomplete>
                     </el-col>
-                    <el-col class="infoInput" :span="7">
+                    <el-col class="infoInput" :span="6">
+                    
+                    </el-col>
+                    <el-col class="infoInput" :span="4">
                         <el-radio-group v-model="item.availability">
                             <el-radio :label="1">是</el-radio>
                             <el-radio :label="0">否</el-radio>

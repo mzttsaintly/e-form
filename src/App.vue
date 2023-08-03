@@ -5,7 +5,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <el-row class="pcHeadBox" :span="24"></el-row>
   <el-row class="mainBox" :span="24">
-    <el-col class="sideBox" :span="0" :md="3">
+    <el-col class="sideBox" :span="3" :md="3">
       <el-menu router="true">
         <el-menu-item index="/addMaterial">
           新增物料
@@ -24,7 +24,7 @@ import { RouterLink, RouterView } from 'vue-router'
         </el-menu-item>
       </el-menu>
     </el-col>
-    <el-col class="showBox" :span="24" :md="19">
+    <el-col class="showBox" :span="19" :md="19">
       <RouterView></RouterView>
     </el-col>
   </el-row>

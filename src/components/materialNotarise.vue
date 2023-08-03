@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, onBeforeMount } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import baseUrl from '../assets/apilink.json';
 import axios from 'axios';
 
@@ -78,24 +78,64 @@ const autoFill = (item) => {
 // 获取物料列表链接
 const getMaterialUrl = baseUrl['baseUrl'] + 'queryMaterial'
 
-const loadMaterialName = () => {
-    let materialList = []
-    axios.post(getMaterialUrl).then((response) => {
-        
+// 临时存储从服务器获取的数据
+let severData = []
+
+// 从服务器获取数据
+const getSeverData = async () => {
+    await axios.post(getMaterialUrl).then(
+        (response) => {
+            severData = response.data;
+            // console.log(severData)
+        }
+    ).catch((err) => {
+        ElMessageBox.alert(err, '服务器错误', {
+            confirmButtonText: 'OK',
+        })
+        console.log(err)
     })
-    
-    return [
-        { value: '50mL离心管', lot: [{ value: '06023601', POV: '2028-02-28' }, { value: '06023061', POV: '2028-05-28' }] },
-        { value: '250mL离心管', lot: [{ value: '298023601', POV: '2025-10-25' }] },
-        { value: '10mL移液管', lot: [{ value: 'BB03004', POV: '2027-03' }] },
-        { value: '25mL移液管', lot: [{ value: 'BB06005', POV: '2027-03' }] },
-    ]
 }
 
-onMounted(() => {
+// 先搜索有几种物料名称
+const materialNameMap = new Map()
+
+const getMaterialNameMap = async () => {
+    severData.forEach((item) => {
+        materialNameMap.set(item['material_name'], 1)
+    })
+    // console.log(EquipmentNameMap)
+}
+
+const loadMaterialName = async () => {
+    let res = []
+    for (let [key, value] of materialNameMap) {
+        let tempItem = {value: key, lot:[]}
+        severData.forEach((item) => {
+            if (item['material_name'] === key) {
+                tempItem.lot.push({value: item.material_lot, POV: item.material_EOV})
+            }
+        })
+        res.push(tempItem)
+    }
+    return res
+    // return [
+    //     { value: '50mL离心管', lot: [{ value: '06023601', POV: '2028-02-28' }, { value: '06023061', POV: '2028-05-28' }] },
+    //     { value: '250mL离心管', lot: [{ value: '298023601', POV: '2025-10-25' }] },
+    //     { value: '10mL移液管', lot: [{ value: 'BB03004', POV: '2027-03' }] },
+    //     { value: '25mL移液管', lot: [{ value: 'BB06005', POV: '2027-03' }] },
+    // ]
+}
+
+onMounted(async () => {
+    await getSeverData()
+    await getMaterialNameMap()
+    materialList.value = await loadMaterialName()
     // console.log(getMaterialUrl)
-    materialList.value = loadMaterialName()
+    
 })
+
+// 提交数据
+
 </script>
 
 <template>

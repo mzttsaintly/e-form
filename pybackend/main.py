@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from loguru import logger
 import os
 from json import dumps
+import datetime
 
 from util.connect import db, Material, Equipments, add_material, add_equipments, queryMaterial, queryEquipments
 
@@ -95,3 +96,8 @@ def add_Equipments():
         res_list.append(add_equipments(equipName, equipNum, place))
     return dumps(res_list, ensure_ascii=False)
 
+
+def get_data():
+    json_list = request.json
+    now_today = datetime.datetime.today().strftime('%Y-%m-%d')
+    filename = now_today
