@@ -17,6 +17,7 @@ def mk_json(data, filename):
         with open(filename, mode='w', encoding='utf-8') as f:
             f.write(data)
     except:
-        return "发生错误"
+        raise
+        # return "发生错误"
     return "写入成功"
 

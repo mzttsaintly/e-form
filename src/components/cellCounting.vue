@@ -1,10 +1,11 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
-
+import { useCellCountindStore, useHeightStore } from '../stores/counter';
 // 表单数据
-const cellCounted = reactive([
-    { concentration: ref(2), indexes: ref(5), combinationCounted: ref(''), motilityRate: ref(100), CakingRate: ref(0), volume: ref(40), totalCells: ref() },
-])
+const cellCounted = useCellCountindStore().cellCounted
+// const cellCounted = reactive([
+//     { concentration: ref(2), indexes: ref(5), combinationCounted: ref(''), motilityRate: ref(100), CakingRate: ref(0), volume: ref(40), totalCells: ref() },
+// ])
 
 // 获取当前总细胞数
 const totalCellCount = ref()
@@ -77,66 +78,69 @@ const getSverageValue = (param) => {
 </script>
 
 <template>
-    <el-row class="cellCounting">
-        <el-col class="countInput">
+    <el-scrollbar :height="useHeightStore().scrollbarHeight">
+        <el-row class="cellCounting">
+            <el-col class="countInput">
 
-            <el-form :model="cellCounted" label-position="top">
-                <el-form-item v-for="(item, index) in cellCounted" :key="index">
-                    <el-row class="infoInput">
-                        <el-tag disable-transitions="true">细胞浓度(cells/mL)</el-tag>
-                        <el-input-number v-model="item.concentration" clearable placeholder="细胞浓度" :precision="2"
-                            :step="0.1" :max="10" :min="0" @change="autoCount(cellCounted[index])"></el-input-number>
-                        E
-                        <el-input-number v-model="item.indexes" clearable placeholder="指数" :step="1"
-                            @change="autoCount(cellCounted[index])"></el-input-number>
+                <el-form :model="cellCounted" label-position="top">
+                    <el-form-item v-for="(item, index) in cellCounted" :key="index">
+                        <el-row class="infoInput">
+                            <el-tag disable-transitions="true">细胞浓度(cells/mL)</el-tag>
+                            <el-input-number v-model="item.concentration" clearable placeholder="细胞浓度" :precision="2"
+                                :step="0.1" :max="10" :min="0" @change="autoCount(cellCounted[index])"
+                                label="细胞浓度(cells/mL)"></el-input-number>
+                            E
+                            <el-input-number v-model="item.indexes" clearable placeholder="指数" :step="1"
+                                @change="autoCount(cellCounted[index])"></el-input-number>
 
-                        <el-divider direction="vertical" />
-                        <el-tag disable-transitions="true">细胞活率(%)</el-tag>
-                        <el-input-number v-model="item.motilityRate" clearable placeholder="细胞活率" :precision="1" :step="0.1"
-                            :max="100" :min="0"></el-input-number>
-
-
-                        <el-divider direction="vertical" />
-                        <el-tag disable-transitions="true">结团率(%)</el-tag>
-                        <el-input-number v-model="item.CakingRate" clearable placeholder="结团率" :precision="1" :step="1"
-                            :max="100" :min="0"></el-input-number>
+                            <el-divider direction="vertical" />
+                            <el-tag disable-transitions="true">细胞活率(%)</el-tag>
+                            <el-input-number v-model="item.motilityRate" clearable placeholder="细胞活率" :precision="1"
+                                :step="0.1" :max="100" :min="0"></el-input-number>
 
 
-                        <el-divider direction="vertical" />
-                        <el-tag disable-transitions="true">体积(mL)</el-tag>
-                        <el-input-number v-model="item.volume" clearable placeholder="体积" :precision="1" :step="1" :min="0"
-                            @change="autoCount(cellCounted[index])"></el-input-number>
+                            <el-divider direction="vertical" />
+                            <el-tag disable-transitions="true">结团率(%)</el-tag>
+                            <el-input-number v-model="item.CakingRate" clearable placeholder="结团率" :precision="1" :step="1"
+                                :max="100" :min="0"></el-input-number>
 
-                        <el-divider direction="vertical" />
-                        <el-button type="danger" round @click="removeCounted(item)">删除</el-button>
-                    </el-row>
-                </el-form-item>
-                <!-- {{ cellCounted }} -->
-            </el-form>
-            <el-button type="primary" @click="addCounted">+</el-button>
-        </el-col>
-        <el-col class="countShow">
-            <el-table :data="cellCounted" show-summary :summary-method="getSverageValue">
-                <el-table-column type="index" :index="indexMethod" />
-                <el-table-column prop="combinationCounted" label="细胞浓度(cells/mL)"></el-table-column>
-                <el-table-column prop="motilityRate" label="细胞活率(%)"></el-table-column>
-                <el-table-column prop="CakingRate" label="细胞结团率(%)"></el-table-column>
-                <el-table-column prop="volume" label="体积(mL)"></el-table-column>
-                <el-table-column prop="totalCells" label="总数(cells)"></el-table-column>
-            </el-table>
-            <el-divider />
-            <el-card class="howMuchLayer">
-                <template #header>
-                    <div class="card-header">
-                        <span>可以种多少瓶培养瓶(向上取整)</span>
-                    </div>
-                </template>
-                <el-tag>五层培养瓶：{{ fiveLayer }}个</el-tag>
-                <el-divider direction="vertical" />
-                <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}个</el-tag>
-                <el-divider direction="vertical" />
-                <el-tag class="ml-2" type="warning">T150：{{ T150 }}个</el-tag>
-            </el-card>
-        </el-col>
-    </el-row>
+
+                            <el-divider direction="vertical" />
+                            <el-tag disable-transitions="true">体积(mL)</el-tag>
+                            <el-input-number v-model="item.volume" clearable placeholder="体积" :precision="1" :step="1"
+                                :min="0" @change="autoCount(cellCounted[index])"></el-input-number>
+
+                            <el-divider direction="vertical" />
+                            <el-button type="danger" round @click="removeCounted(item)">删除</el-button>
+                        </el-row>
+                    </el-form-item>
+                    <!-- {{ cellCounted }} -->
+                </el-form>
+                <el-button type="primary" @click="addCounted">+</el-button>
+            </el-col>
+            <el-col class="countShow">
+                <el-table :data="cellCounted" show-summary :summary-method="getSverageValue">
+                    <el-table-column type="index" :index="indexMethod" />
+                    <el-table-column prop="combinationCounted" label="细胞浓度(cells/mL)"></el-table-column>
+                    <el-table-column prop="motilityRate" label="细胞活率(%)"></el-table-column>
+                    <el-table-column prop="CakingRate" label="细胞结团率(%)"></el-table-column>
+                    <el-table-column prop="volume" label="体积(mL)"></el-table-column>
+                    <el-table-column prop="totalCells" label="总数(cells)"></el-table-column>
+                </el-table>
+                <el-divider />
+                <el-card class="howMuchLayer">
+                    <template #header>
+                        <div class="card-header">
+                            <span>可以种多少瓶培养瓶(向上取整)</span>
+                        </div>
+                    </template>
+                    <el-tag>五层培养瓶：{{ fiveLayer }}个</el-tag>
+                    <el-divider direction="vertical" />
+                    <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}个</el-tag>
+                    <el-divider direction="vertical" />
+                    <el-tag class="ml-2" type="warning">T150：{{ T150 }}个</el-tag>
+                </el-card>
+            </el-col>
+        </el-row>
+    </el-scrollbar>
 </template>

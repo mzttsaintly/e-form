@@ -2,11 +2,12 @@
 import { ref, reactive, onMounted } from 'vue';
 import baseUrl from '../assets/apilink.json';
 import axios from 'axios';
-
+import { useMaterialStore, useHeightStore } from '../stores/counter';
 // 循环表单中的内容
-const materials = reactive([
-    { material: ref(''), quantity: ref(''), lot: ref(''), POV: ref('') }
-])
+const materials = useMaterialStore().materials
+// const materials = reactive([
+//     { material: ref(''), quantity: ref(''), lot: ref(''), POV: ref('') }
+// ])
 
 // 新增项目
 const addMaterial = () => {
@@ -109,10 +110,10 @@ const getMaterialNameMap = async () => {
 const loadMaterialName = async () => {
     let res = []
     for (let [key, value] of materialNameMap) {
-        let tempItem = {value: key, lot:[]}
+        let tempItem = { value: key, lot: [] }
         severData.forEach((item) => {
             if (item['material_name'] === key) {
-                tempItem.lot.push({value: item.material_lot, POV: item.material_EOV})
+                tempItem.lot.push({ value: item.material_lot, POV: item.material_EOV })
             }
         })
         res.push(tempItem)
@@ -131,7 +132,7 @@ onMounted(async () => {
     await getMaterialNameMap()
     materialList.value = await loadMaterialName()
     // console.log(getMaterialUrl)
-    
+
 })
 
 // 提交数据
@@ -139,51 +140,54 @@ onMounted(async () => {
 </script>
 
 <template>
-    <el-form class="material" :model="materials">
-        <el-row class="titleBox">
-            <el-col class="titleName" :span="4">
-                <el-text class="equipName">物料名称</el-text>
-            </el-col>
-            <el-col class="titleName" :span="2">
-                <el-text class="equipNum">数量</el-text>
-            </el-col>
-            <el-col class="titleName" :span="10">
-                <el-text class="availability">批号</el-text>
-            </el-col>
-            <el-col class="titleName" :span="4">
-                <el-text class="availability">有效期/复验期</el-text>
-            </el-col>
-        </el-row>
-        <el-row class="writeBox">
-            <el-col :span="24">
-                <el-form-item class="materialItem" v-for="(item, index) in materials" :key="index">
-                    <el-col class="infoInput" :span="4">
-                        <el-autocomplete :fetch-suggestions="querySearchMaterialsName" clearable placeholder="请输入物料名称"
-                            v-model="item.material">
-                        </el-autocomplete>
-                    </el-col>
-                    <el-col class="infoInput" :span="2">
-                        <el-input v-model="item.quantity" placeholder="请输入数量" />
-                    </el-col>
-                    <el-col class="infoInput" :span="10">
-                        <el-autocomplete :fetch-suggestions="querySearchMaterialNum" clearable placeholder="请输入物料批号"
-                            @focus="focusNum(materials[index].material)" v-model="item.lot" @select="autoFill(materials[index])">
-                        </el-autocomplete>
-                    </el-col>
-                    <el-col class="infoInput" :span="4">
-                        <el-input v-model="item.POV" placeholder="请输入有效期/复验期" />
-                    </el-col>
-                    <el-col class="infoInput" :span="3">
-                        <el-button type="danger" round @click="removematerial(item)">删除</el-button>
-                    </el-col>
-                </el-form-item>
-            </el-col>
-            <el-col :span="3">
-                <el-button type="primary" @click="addMaterial">+</el-button>
-            </el-col>
-        </el-row>
-        <!-- {{ materials }} -->
-    </el-form>
+    <el-scrollbar :height="useHeightStore().scrollbarHeight">
+        <el-form class="material" :model="materials">
+            <el-row class="titleBox">
+                <el-col class="titleName" :span="4">
+                    <el-text class="equipName">物料名称</el-text>
+                </el-col>
+                <el-col class="titleName" :span="2">
+                    <el-text class="equipNum">数量</el-text>
+                </el-col>
+                <el-col class="titleName" :span="10">
+                    <el-text class="availability">批号</el-text>
+                </el-col>
+                <el-col class="titleName" :span="4">
+                    <el-text class="availability">有效期/复验期</el-text>
+                </el-col>
+            </el-row>
+            <el-row class="writeBox">
+                <el-col :span="24">
+                    <el-form-item class="materialItem" v-for="(item, index) in materials" :key="index">
+                        <el-col class="infoInput" :span="4">
+                            <el-autocomplete :fetch-suggestions="querySearchMaterialsName" clearable placeholder="请输入物料名称"
+                                v-model="item.material">
+                            </el-autocomplete>
+                        </el-col>
+                        <el-col class="infoInput" :span="2">
+                            <el-input v-model="item.quantity" placeholder="请输入数量" />
+                        </el-col>
+                        <el-col class="infoInput" :span="10">
+                            <el-autocomplete :fetch-suggestions="querySearchMaterialNum" clearable placeholder="请输入物料批号"
+                                @focus="focusNum(materials[index].material)" v-model="item.lot"
+                                @select="autoFill(materials[index])">
+                            </el-autocomplete>
+                        </el-col>
+                        <el-col class="infoInput" :span="4">
+                            <el-input v-model="item.POV" placeholder="请输入有效期/复验期" />
+                        </el-col>
+                        <el-col class="infoInput" :span="3">
+                            <el-button type="danger" round @click="removematerial(item)">删除</el-button>
+                        </el-col>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="3">
+                    <el-button type="primary" @click="addMaterial">+</el-button>
+                </el-col>
+            </el-row>
+            <!-- {{ materials }} -->
+        </el-form>
+    </el-scrollbar>
 </template>
 
 <style>

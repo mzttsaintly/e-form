@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from loguru import logger
@@ -6,6 +8,7 @@ from json import dumps
 import datetime
 
 from util.connect import db, Material, Equipments, add_material, add_equipments, queryMaterial, queryEquipments
+from util.get_report import mkdir, mk_json
 
 basedir = os.path.abspath(os.path.dirname(__name__))
 app = Flask(__name__)
@@ -97,7 +100,14 @@ def add_Equipments():
     return dumps(res_list, ensure_ascii=False)
 
 
+@app.route("/get_data", methods=["POST"])
 def get_data():
-    json_list = request.json
-    now_today = datetime.datetime.today().strftime('%Y-%m-%d')
-    filename = now_today
+    data = json.dumps(request.json, ensure_ascii=False)
+    logger.debug(data)
+
+    now_today = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+    path = os.path.join(basedir, "report")
+    mkdir(path)
+    filename = path + os.path.sep + now_today + '.json'
+    res = mk_json(data, filename)
+    return res
