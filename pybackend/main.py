@@ -8,9 +8,10 @@ from json import dumps
 import datetime
 
 from util.connect import db, Material, Equipments, add_material, add_equipments, queryMaterial, queryEquipments
-from util.get_report import mkdir, mk_json
+from util.get_report import mkdir, mk_json, get_report_list, read_report
 
 basedir = os.path.abspath(os.path.dirname(__name__))
+path = os.path.join(basedir, "report")
 app = Flask(__name__)
 cors = CORS(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "test.db")
@@ -102,12 +103,38 @@ def add_Equipments():
 
 @app.route("/get_data", methods=["POST"])
 def get_data():
+    """
+    接收前端回传的报告内容并写入json文件中
+    :return: 写入是否成功的提示
+    """
     data = json.dumps(request.json, ensure_ascii=False)
     logger.debug(data)
 
     now_today = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    path = os.path.join(basedir, "report")
+
     mkdir(path)
     filename = path + os.path.sep + now_today + '.json'
     res = mk_json(data, filename)
+    return res
+
+
+@app.route("/return_report_list", methods=["POST"])
+def return_report_list():
+    """
+    返回文件夹中报告文件的列表
+    :return:
+    """
+    mkdir(path)
+    res = get_report_list(path)
+    return res
+
+
+@app.route("/return_report_json", methods=["POST"])
+def return_report_json():
+    """
+    返回所选文件中的json内容
+    :return:
+    """
+    filename = request.json.get('filename')
+    res = read_report(path + os.path.sep + filename)
     return res

@@ -21,3 +21,15 @@ def mk_json(data, filename):
         # return "发生错误"
     return "写入成功"
 
+
+def get_report_list(dir_path):
+    res = os.listdir(dir_path)
+    return res
+
+
+def read_report(filename):
+    try:
+        with open(filename, 'r', -1, 'utf-8') as f:
+            return f.read()
+    except:
+        return '文件不存在'
