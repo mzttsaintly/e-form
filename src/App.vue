@@ -54,6 +54,9 @@ const upload = () => {
         <el-menu-item index="/equipmentNotarise">
           设备确认
         </el-menu-item>
+        <el-menu-item index="/getReport">
+          查看记录
+        </el-menu-item>
         <el-menu-item index="/addMaterial">
           新增物料
         </el-menu-item>

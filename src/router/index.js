@@ -29,6 +29,11 @@ const router = createRouter({
       name: 'equipmentNotarise',
       component: () => import('../components/equipmentNotarise.vue')
     },
+    {
+      path: '/getReport',
+      name: 'getReport',
+      component: () => import('../components/getReport.vue')
+    },
   ]
 })
 

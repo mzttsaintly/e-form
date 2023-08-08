@@ -126,7 +126,7 @@ def return_report_list():
     """
     mkdir(path)
     res = get_report_list(path)
-    return res
+    return dumps(res, ensure_ascii=False)
 
 
 @app.route("/return_report_json", methods=["POST"])
@@ -137,4 +137,4 @@ def return_report_json():
     """
     filename = request.json.get('filename')
     res = read_report(path + os.path.sep + filename)
-    return res
+    return dumps(res, ensure_ascii=False)

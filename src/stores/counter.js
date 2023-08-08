@@ -1,5 +1,6 @@
 import { ref, reactive, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { rateEmits } from 'element-plus'
 
 // export const useCounterStore = defineStore('counter', () => {
 //   const count = ref(0)
@@ -47,4 +48,15 @@ export const useInoculumStore = defineStore('inoculum', () => {
     inoculumDensity: ref()
   })
   return { inoculumSize }
+})
+
+// 获取报告的表单
+export const useReportStore = defineStore('report', () => {
+  const reportList = reactive([])
+  const reportTable = reactive({
+    uploadMaterial: reactive([]),
+    uploadEquipment: ref([]),
+    uploadCells: ref([])
+  })
+  return { reportList, reportTable }
 })
