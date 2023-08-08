@@ -38,3 +38,13 @@ export const useHeightStore = defineStore('height', () => {
   const scrollbarHeight = ref('80vh')
   return { scrollbarHeight }
 })
+
+export const useInoculumStore = defineStore('inoculum', () => {
+  const inoculumSize = reactive({
+    T150: ref(0),
+    fivelayer: ref(1),
+    tenlayer: ref(0),
+    inoculumDensity: ref()
+  })
+  return { inoculumSize }
+})

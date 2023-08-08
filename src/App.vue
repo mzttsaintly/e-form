@@ -41,24 +41,24 @@ const upload = () => {
 </script>
 
 <template>
-  <el-row class="pcHeadBox" :span="24"></el-row>
-  <el-row class="mainBox" :span="24">
+  <el-row class="pcHeadBox"></el-row>
+  <el-row class="mainBox">
     <el-col class="sideBox" :span="3" :md="3">
       <el-menu router="true">
-        <el-menu-item index="/addMaterial">
-          新增物料
-        </el-menu-item>
-        <el-menu-item index="/addEquipment">
-          新增设备
-        </el-menu-item>
         <el-menu-item index="/cellCounting">
-          细胞计数
+          <el-text>细胞计数</el-text>
         </el-menu-item>
         <el-menu-item index="/materialNotarise">
           物料确认
         </el-menu-item>
         <el-menu-item index="/equipmentNotarise">
           设备确认
+        </el-menu-item>
+        <el-menu-item index="/addMaterial">
+          新增物料
+        </el-menu-item>
+        <el-menu-item index="/addEquipment">
+          新增设备
         </el-menu-item>
       </el-menu>
     </el-col>
