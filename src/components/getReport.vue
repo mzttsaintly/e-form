@@ -84,7 +84,22 @@ const reportTableVisible = ref(false)
             <el-table-column prop="lot" label="物料批号"></el-table-column>
             <el-table-column prop="POV" label="有效期/复验期"></el-table-column>
             <el-table-column prop="quantity" label="数量"></el-table-column>
-            
+        </el-table>
+
+        <el-table :data="reportTable.uploadEquipment">
+            <el-table-column  type="index" label="序号" width="100" ></el-table-column>
+            <el-table-column prop="equipName" label="设备名称"></el-table-column>
+            <el-table-column prop="equipNum" label="设备编号"></el-table-column>
+            <el-table-column prop="place" label="登记位置"></el-table-column>
+            <el-table-column prop="availability" label="是否可用"></el-table-column>
+        </el-table>
+
+        <el-table :data="reportTable.uploadCells">
+            <el-table-column  type="index" label="序号" width="100" ></el-table-column>
+            <el-table-column prop="material" label="物料名称"></el-table-column>
+            <el-table-column prop="lot" label="物料批号"></el-table-column>
+            <el-table-column prop="POV" label="有效期/复验期"></el-table-column>
+            <el-table-column prop="quantity" label="数量"></el-table-column>
         </el-table>
         <template #footer>
             <span class="dialog-footer">
