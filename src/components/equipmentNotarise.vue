@@ -133,56 +133,32 @@ onMounted(async () => {
 <template>
     <el-scrollbar :height="useHeightStore().scrollbarHeight">
         <el-form class="notarise" :model="equipment">
-            <el-row class="titleBox" :span="24">
-                <el-col class="titleName" :span="7">
-                    <el-text class="equipName">设备名称</el-text>
-                </el-col>
-                <el-col class="titleName" :span="7">
-                    <el-text class="equipNum">编号</el-text>
-                </el-col>
-                <el-col class="titleName" :span="5">
-                    <el-text class="availability">设备登记位置</el-text>
-                </el-col>
-                <el-col class="titleName" :span="4">
-                    <el-text class="availability">是否符合要求</el-text>
-                </el-col>
-            </el-row>
-            <el-row class="writeBox">
-                <el-col :span="24">
-                    <el-form-item class="notariseItem" v-for="(item, index) in equipment" :key="index">
-                        <el-col class="infoInput" :span="7">
-                            <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="设备名称"
-                                v-model="item.equipName" size="large">
-                                <!-- 设备名称 -->
-                            </el-autocomplete>
-                        </el-col>
-                        <el-col class="infoInput" :span="7">
-                            <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="设备编号"
-                                v-model="item.equipNum" @focus="focusNum(equipment[index].equipName)"
-                                @select="autoShowPlace(equipment[index])" size="large">
-                                <!-- 设备编号 -->
-                            </el-autocomplete>
-                        </el-col>
-                        <el-col class="infoInput" :span="5">
-                            <el-tag v-if="item.place" size="large">{{ item.place }}</el-tag>
-                        </el-col>
-                        <el-col class="infoInput" :span="4">
-                            <el-radio-group v-model="item.availability">
-                                <el-radio :label="1">是</el-radio>
-                                <el-radio :label="0">否</el-radio>
-                            </el-radio-group>
-                        </el-col>
-                        <el-col class="infoInput" :span="1">
-                            <el-button type="danger" round @click="removeEquipment(item)">删除</el-button>
-                        </el-col>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="3">
-                    <el-button type="primary" @click="addEquipment">+</el-button>
-                </el-col>
 
-            </el-row>
-            <!-- {{ severData }} -->
+                <el-form-item class="notariseItem" v-for="(item, index) in equipment" :key="index">
+                    <nut-cell>
+                        <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="设备名称"
+                            v-model="item.equipName" size="large">
+                            <!-- 设备名称 -->
+                        </el-autocomplete>
+
+                        <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="设备编号"
+                            v-model="item.equipNum" @focus="focusNum(equipment[index].equipName)"
+                            @select="autoShowPlace(equipment[index])" size="large">
+                            <!-- 设备编号 -->
+                        </el-autocomplete>
+
+                        <el-tag size="large">{{ item.place ? item.place : '设备登记地点'}}</el-tag>
+
+                        <el-radio-group v-model="item.availability">
+                            <el-radio :label="1">是</el-radio>
+                            <el-radio :label="0">否</el-radio>
+                        </el-radio-group>
+
+                        <el-button type="danger" round @click="removeEquipment(item)">删除</el-button>
+                    </nut-cell>
+                </el-form-item>
+                <el-button type="primary" @click="addEquipment">+</el-button>
+
         </el-form>
     </el-scrollbar>
 </template>

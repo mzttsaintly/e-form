@@ -1,6 +1,6 @@
 <script setup>
-import { RouterView } from 'vue-router'
-import { reactive } from 'vue';
+import { RouterView, useRouter } from 'vue-router'
+import { reactive, ref } from 'vue';
 import { useCellCountindStore, useEquipmentStore, useMaterialStore } from './stores/counter';
 import baseUrl from './assets/apilink.json';
 import axios from 'axios';
@@ -38,12 +38,40 @@ const upload = () => {
     console.log(err)
   })
 }
+
+const router = useRouter()
+
+// 移动端导航内容
+const mobileNavVisible = ref(false)
+
+const navList = reactive([
+  {
+    id:1,
+    text: '细胞计数',
+    path: '/cellCounting'
+  },
+  {
+    id:2,
+    text: '物料确认',
+    path: '/materialNotarise'
+  },
+  {
+    id:3,
+    text: '设备确认',
+    path: '/equipmentNotarise'
+  },
+])
+
+const SelectedRouter = (value) => {
+  // console.log(value.item.path)
+  router.push({path: value.item.path})
+}
 </script>
 
 <template>
   <el-row class="pcHeadBox"></el-row>
-  <el-row class="mainBox">
-    <el-col class="sideBox" :span="3" :md="3">
+  <el-row class="mainBox pcWeb">
+    <el-col class="sideBox" :span="3">
       <el-menu router="true">
         <el-menu-item index="/cellCounting">
           <el-text>细胞计数</el-text>
@@ -65,13 +93,41 @@ const upload = () => {
         </el-menu-item>
       </el-menu>
     </el-col>
-    <el-col class="showBox" :span="21" :md="21">
+    <el-col class="showBox" :span="21">
       <RouterView></RouterView>
       <el-row class="footer">
-        <el-button type="primary" @click="upload">上传</el-button>
+        <el-button class="pcWeb" type="primary" @click="upload">上传</el-button>
       </el-row>
     </el-col>
   </el-row>
+  <!-- 以下是移动端页面 -->
+  <nut-fixed-nav class="mobileWeb" type="left" :position="{ top: '140px' }" v-model:visible="mobileNavVisible" :nav-list="navList" @selected="SelectedRouter"/>
+  <nut-row class="mainBox mobileWeb">
+    <nut-col class="showBox" :span="24">
+      <RouterView></RouterView>
+    </nut-col>
+    
+    <nut-button class="mobileWeb uploadButton" type="info" @click="upload">上传</nut-button>
+  </nut-row>
 </template>
 
-<style scoped></style>
+<style>
+.footer {
+  justify-content: center;
+}
+
+
+@media (min-width: 768px) {
+    .mobileWeb {
+        display: none;
+        --nut-input-font-size: 40px;
+    }
+}
+
+@media (max-width: 767px) {
+    .pcWeb {
+        display: none;
+    }
+
+}
+</style>

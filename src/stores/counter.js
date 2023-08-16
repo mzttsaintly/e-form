@@ -29,7 +29,7 @@ export const useMaterialStore = defineStore('material', () => {
 
 export const useCellCountindStore = defineStore('cell', () => {
   const cellCounted = reactive([
-    { concentration: ref(2), indexes: ref(5), combinationCounted: ref(''), motilityRate: ref(100), CakingRate: ref(0), volume: ref(40), totalCells: ref() },
+    { concentration: ref(2), indexes: ref(5), combinationCounted: ref(''), motilityRate: ref(100), CakingRate: ref(0), volume: ref(40), totalCells: ref(), COV: ref() },
 ])
 
   return { cellCounted }
