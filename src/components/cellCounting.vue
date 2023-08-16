@@ -184,17 +184,17 @@ onMounted(() => {
             <el-card>
                 <template #header>
                     <div class="card-header">
-                        <span>实际种瓶数</span>
+                        <span>平均细胞密度：</span>
                     </div>
                 </template>
                 <el-form :model="inoculumSize" label-position="Right" label-width="auto">
-                    <el-form-item label="五层培养瓶：">
+                    <el-form-item label="五层培养瓶：(875平方厘米)">
                         <el-input-number v-model="inoculumSize.fivelayer" :step="1" step-strictly min="0"></el-input-number>
                     </el-form-item>
-                    <el-form-item label="十层细胞工厂：">
+                    <el-form-item label="十层细胞工厂：(6320平方厘米)">
                         <el-input-number v-model="inoculumSize.tenlayer" :step="1" step-strictly min="0"></el-input-number>
                     </el-form-item>
-                    <el-form-item label="T150培养瓶：">
+                    <el-form-item label="T150培养瓶:(150平方厘米)">
                         <el-input-number v-model="inoculumSize.T150" :step="1" step-strictly min="0"></el-input-number>
                     </el-form-item>
                 </el-form>

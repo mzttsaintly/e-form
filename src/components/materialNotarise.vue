@@ -163,30 +163,41 @@ onMounted(async () => {
     </el-scrollbar>
 
     <!-- 以下是移动端UI -->
-    <nut-form class="mobileWeb">
-        <nut-form-item v-for="(item, index) in materials" :key="index">
-            <nut-cell size="large">
-                <nut-input v-model="item.material" placeholder="物料名称"></nut-input>
-            </nut-cell>
+    <el-scrollbar class="mobileWeb" :height="useHeightStore().scrollbarHeight">
+        <nut-form :model="materials">
+            <nut-form-item v-for="(item, index) in materials" :key="index">
+                <nut-cell size="large">
+                    <!-- <nut-input v-model="item.material" placeholder="物料名称"></nut-input> -->
+                    <el-autocomplete :fetch-suggestions="querySearchMaterialsName" clearable placeholder="物料名称"
+                        v-model="item.material">
+                    </el-autocomplete>
+                </nut-cell>
 
-            <nut-cell size="large">
-                <nut-input v-model="item.quantity" placeholder="数量"></nut-input>
-            </nut-cell>
+                <nut-cell size="large">
+                    <!-- <nut-input v-model="item.quantity" placeholder="数量"></nut-input> -->
+                    <el-input class="materialNumber" v-model="item.quantity" placeholder="数量" />
+                </nut-cell>
 
-            <nut-cell size="large">
-                <nut-input v-model="item.lot" placeholder="物料批号"></nut-input>
-            </nut-cell>
+                <nut-cell size="large">
+                    <!-- <nut-input v-model="item.lot" placeholder="物料批号"></nut-input> -->
+                    <el-autocomplete :fetch-suggestions="querySearchMaterialNum" clearable placeholder="物料批号"
+                        @focus="focusNum(materials[index].material)" v-model="item.lot"
+                        @select="autoFill(materials[index])">
+                    </el-autocomplete>
+                </nut-cell>
 
-            <nut-cell size="large">
-                <nut-input v-model="item.POV" placeholder="有效期/复验期"></nut-input>
-            </nut-cell>
+                <nut-cell size="large">
+                    <!-- <nut-input v-model="item.POV" placeholder="有效期/复验期"></nut-input> -->
+                    <el-input class="materialNumber" v-model="item.POV" placeholder="有效期/复验期" />
+                </nut-cell>
 
-            <nut-cell size="large">
-                <nut-button type="danger" round @click="removematerial(item)">删除</nut-button>
-            </nut-cell>
-        </nut-form-item>
-        <nut-button size="large" type="success" @click="addMaterial">增加条目</nut-button>
-    </nut-form>
+                <nut-cell size="large">
+                    <nut-button type="danger" round @click="removematerial(item)">删除</nut-button>
+                </nut-cell>
+            </nut-form-item>
+            <nut-button size="large" type="success" @click="addMaterial">增加条目</nut-button>
+        </nut-form>
+    </el-scrollbar>
 </template>
 
 <style>

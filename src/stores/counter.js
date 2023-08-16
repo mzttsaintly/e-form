@@ -36,7 +36,7 @@ export const useCellCountindStore = defineStore('cell', () => {
 })
 
 export const useHeightStore = defineStore('height', () => {
-  const scrollbarHeight = ref('80vh')
+  const scrollbarHeight = ref('85vh')
   return { scrollbarHeight }
 })
 
@@ -55,8 +55,8 @@ export const useReportStore = defineStore('report', () => {
   const reportList = reactive([])
   const reportTable = reactive({
     uploadMaterial: reactive([]),
-    uploadEquipment: ref([]),
-    uploadCells: ref([])
+    uploadEquipment: reactive([]),
+    uploadCells: reactive([])
   })
   return { reportList, reportTable }
 })

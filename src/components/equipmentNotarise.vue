@@ -131,35 +131,69 @@ onMounted(async () => {
 </script>
 
 <template>
-    <el-scrollbar :height="useHeightStore().scrollbarHeight">
+    <el-scrollbar class="pcWeb" :height="useHeightStore().scrollbarHeight">
         <el-form class="notarise" :model="equipment">
 
-                <el-form-item class="notariseItem" v-for="(item, index) in equipment" :key="index">
-                    <nut-cell>
-                        <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="设备名称"
-                            v-model="item.equipName" size="large">
-                            <!-- 设备名称 -->
-                        </el-autocomplete>
+            <el-form-item class="notariseItem" v-for="(item, index) in equipment" :key="index">
+                <nut-cell>
+                    <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="设备名称"
+                        v-model="item.equipName" size="large">
+                        <!-- 设备名称 -->
+                    </el-autocomplete>
 
-                        <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="设备编号"
-                            v-model="item.equipNum" @focus="focusNum(equipment[index].equipName)"
-                            @select="autoShowPlace(equipment[index])" size="large">
-                            <!-- 设备编号 -->
-                        </el-autocomplete>
+                    <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="设备编号"
+                        v-model="item.equipNum" @focus="focusNum(equipment[index].equipName)"
+                        @select="autoShowPlace(equipment[index])" size="large">
+                        <!-- 设备编号 -->
+                    </el-autocomplete>
 
-                        <el-tag size="large">{{ item.place ? item.place : '设备登记地点'}}</el-tag>
+                    <el-tag size="large">{{ item.place ? item.place : '设备登记地点' }}</el-tag>
 
-                        <el-radio-group v-model="item.availability">
-                            <el-radio :label="1">是</el-radio>
-                            <el-radio :label="0">否</el-radio>
-                        </el-radio-group>
+                    <el-radio-group v-model="item.availability">
+                        <el-radio :label="1">是</el-radio>
+                        <el-radio :label="0">否</el-radio>
+                    </el-radio-group>
 
-                        <el-button type="danger" round @click="removeEquipment(item)">删除</el-button>
-                    </nut-cell>
-                </el-form-item>
-                <el-button type="primary" @click="addEquipment">+</el-button>
+                    <el-button type="danger" round @click="removeEquipment(item)">删除</el-button>
+                </nut-cell>
+            </el-form-item>
+            <el-button type="primary" @click="addEquipment">+</el-button>
 
         </el-form>
+    </el-scrollbar>
+
+    <!-- 以下是移动端UI -->
+    <el-scrollbar class="mobileWeb" :height="useHeightStore().scrollbarHeight">
+        <nut-form :model="equipment">
+            <nut-form-item class="notariseItem" v-for="(item, index) in equipment" :key="index">
+                <nut-cell size="large">
+                    <el-autocomplete :fetch-suggestions="querySearchEquipName" clearable placeholder="设备名称"
+                        v-model="item.equipName" size="large">
+                        <!-- 设备名称 -->
+                    </el-autocomplete>
+                </nut-cell>
+                <nut-cell size="large">
+                    <el-autocomplete :fetch-suggestions="querySearchEquipNum" clearable placeholder="设备编号"
+                        v-model="item.equipNum" @focus="focusNum(equipment[index].equipName)"
+                        @select="autoShowPlace(equipment[index])" size="large">
+                        <!-- 设备编号 -->
+                    </el-autocomplete>
+                </nut-cell>
+                <nut-cell size="large">
+                    <el-tag size="large">{{ item.place ? item.place : '设备登记地点' }}</el-tag>
+                </nut-cell>
+                <nut-cell size="large">
+                    <el-radio-group v-model="item.availability">
+                        <el-radio :label="1">是</el-radio>
+                        <el-radio :label="0">否</el-radio>
+                    </el-radio-group>
+                </nut-cell>
+                <nut-cell size="large">
+                    <el-button type="danger" round @click="removeEquipment(item)">删除</el-button>
+                </nut-cell>
+            </nut-form-item>
+        </nut-form>
+        <nut-button size="large" type="success" @click="addEquipment">增加条目</nut-button>
     </el-scrollbar>
 </template>
 

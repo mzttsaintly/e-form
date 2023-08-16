@@ -46,25 +46,30 @@ const mobileNavVisible = ref(false)
 
 const navList = reactive([
   {
-    id:1,
+    id: 1,
     text: '细胞计数',
     path: '/cellCounting'
   },
   {
-    id:2,
+    id: 2,
     text: '物料确认',
     path: '/materialNotarise'
   },
   {
-    id:3,
+    id: 3,
     text: '设备确认',
     path: '/equipmentNotarise'
+  },
+  {
+    id: 4,
+    text: '查看报告',
+    path: '/getReport'
   },
 ])
 
 const SelectedRouter = (value) => {
   // console.log(value.item.path)
-  router.push({path: value.item.path})
+  router.push({ path: value.item.path })
 }
 </script>
 
@@ -95,18 +100,28 @@ const SelectedRouter = (value) => {
     </el-col>
     <el-col class="showBox" :span="21">
       <RouterView></RouterView>
+      <nut-divider></nut-divider>
       <el-row class="footer">
         <el-button class="pcWeb" type="primary" @click="upload">上传</el-button>
       </el-row>
     </el-col>
   </el-row>
   <!-- 以下是移动端页面 -->
-  <nut-fixed-nav class="mobileWeb" type="left" :position="{ top: '140px' }" v-model:visible="mobileNavVisible" :nav-list="navList" @selected="SelectedRouter"/>
+  <nut-drag direction="y" :style="{ left: '0px', bottom: '240px' }">
+    <nut-fixed-nav class="mobileWeb" type="left" :position="{ top: '140px' }" v-model:visible="mobileNavVisible"
+      :nav-list="navList" @selected="SelectedRouter">
+      <template v-slot:btn>
+        <Retweet color="#fff" />
+        <span class="text">{{ mobileNavVisible ? '关闭菜单' : '打开菜单' }}</span>
+      </template>
+    </nut-fixed-nav>
+  </nut-drag>
+
   <nut-row class="mainBox mobileWeb">
     <nut-col class="showBox" :span="24">
       <RouterView></RouterView>
+      <nut-divider></nut-divider>
     </nut-col>
-    
     <nut-button class="mobileWeb uploadButton" type="info" @click="upload">上传</nut-button>
   </nut-row>
 </template>
@@ -118,16 +133,16 @@ const SelectedRouter = (value) => {
 
 
 @media (min-width: 768px) {
-    .mobileWeb {
-        display: none;
-        --nut-input-font-size: 40px;
-    }
+  .mobileWeb {
+    display: none;
+    --nut-input-font-size: 40px;
+  }
 }
 
 @media (max-width: 767px) {
-    .pcWeb {
-        display: none;
-    }
+  .pcWeb {
+    display: none;
+  }
 
 }
 </style>
