@@ -33,3 +33,4 @@ __pycache__
 report
 apilink.json
 run_server.bat
+uwsgi.ini
