@@ -94,38 +94,46 @@ const reportTableVisible = ref(false)
     </el-scrollbar>
 
     <!-- 报告详情页 -->
-    <el-dialog v-model="reportTableVisible" @close="setCurrentNone()" width="100%">
+    <el-dialog id="printBox" v-model="reportTableVisible" @close="setCurrentNone()" width="90vw">
         <nut-divider>物料详情</nut-divider>
-        <el-table :data="reportTable.uploadMaterial">
-            <el-table-column type="index" label="序号" width="100"></el-table-column>
-            <el-table-column prop="material" label="物料名称"></el-table-column>
-            <el-table-column prop="lot" label="物料批号"></el-table-column>
-            <el-table-column prop="POV" label="有效期/复验期"></el-table-column>
-            <el-table-column prop="quantity" label="数量"></el-table-column>
-        </el-table>
+        <nut-cell>
+            <el-table :data="reportTable.uploadMaterial">
+                <el-table-column type="index" label="序号" width="100"></el-table-column>
+                <el-table-column prop="material" label="物料名称"></el-table-column>
+                <el-table-column prop="lot" label="物料批号"></el-table-column>
+                <el-table-column prop="POV" label="有效期/复验期"></el-table-column>
+                <el-table-column prop="quantity" label="数量"></el-table-column>
+            </el-table>
+        </nut-cell>
 
         <nut-divider>设备详情</nut-divider>
-        <el-table :data="reportTable.uploadEquipment">
-            <el-table-column type="index" label="序号" width="100"></el-table-column>
-            <el-table-column prop="equipName" label="设备名称"></el-table-column>
-            <el-table-column prop="equipNum" label="设备编号"></el-table-column>
-            <el-table-column prop="place" label="登记位置"></el-table-column>
-            <el-table-column prop="availability" label="是否可用"></el-table-column>
-        </el-table>
+        <nut-cell>
+            <el-table :data="reportTable.uploadEquipment">
+                <el-table-column type="index" label="序号" width="100"></el-table-column>
+                <el-table-column prop="equipName" label="设备名称"></el-table-column>
+                <el-table-column prop="equipNum" label="设备编号"></el-table-column>
+                <el-table-column prop="place" label="登记位置"></el-table-column>
+                <el-table-column prop="availability" label="是否可用"></el-table-column>
+            </el-table>
+        </nut-cell>
 
         <nut-divider>细胞计数详情</nut-divider>
-        <el-table :data="reportTable.uploadCells">
-            <el-table-column type="index" label="序号" width="100"></el-table-column>
-            <el-table-column prop="combinationCounted" label="细胞浓度"></el-table-column>
-            <el-table-column prop="motilityRate" label="细胞活率(%)"></el-table-column>
-            <el-table-column prop="CakingRate" label="结团率(%)"></el-table-column>
-            <el-table-column prop="volume" label="体积(mL)"></el-table-column>
-            <el-table-column prop="totalCells" label="细胞总数"></el-table-column>
-            <el-table-column prop="COV" label="变异系数(%)"></el-table-column>
-        </el-table>
+        <nut-cell>
+            <el-table :data="reportTable.uploadCells">
+                <el-table-column type="index" label="序号" width="100"></el-table-column>
+                <el-table-column prop="combinationCounted" label="细胞浓度"></el-table-column>
+                <el-table-column prop="motilityRate" label="细胞活率(%)"></el-table-column>
+                <el-table-column prop="CakingRate" label="结团率(%)"></el-table-column>
+                <el-table-column prop="volume" label="体积(mL)"></el-table-column>
+                <el-table-column prop="totalCells" label="细胞总数"></el-table-column>
+                <el-table-column prop="COV" label="变异系数(%)"></el-table-column>
+            </el-table>
+        </nut-cell>
+
         <template #footer>
             <span class="dialog-footer">
                 <!-- <el-button @click="reportTableVisible = false">取消</el-button> -->
+                <el-button v-print="'#printBox'">打印</el-button>
                 <el-button type="primary" @click="reportTableVisible = false">
                     确认
                 </el-button>

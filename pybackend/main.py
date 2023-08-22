@@ -7,8 +7,14 @@ import os
 from json import dumps
 import datetime
 
-from util.connect import db, Material, Equipments, add_material, add_equipments, queryMaterial, queryEquipments
+from util.connect import db, Material, Equipments, User, add_material, add_equipments, queryMaterial, queryEquipments,\
+    new_user, get_password
 from util.get_report import mkdir, mk_json, get_report_list, read_report
+
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
 basedir = os.path.abspath(os.path.dirname(__name__))
 path = os.path.join(basedir, "report")
@@ -19,12 +25,28 @@ app.config["JSON_AS_ASCII"] = False
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SQLALCHEMY_ECHO"] = True
 
+app.config["JWT_SECRET_KEY"] = "test-secret-key"  # 设置JWT密钥
+
+jwt = JWTManager(app)
+
 # db方法绑定app
 db.init_app(app)
 
 with app.app_context():
     db.create_all()
     logger.debug("正在创建表")
+
+
+# 登录器
+@app.route("/login", methods=["POST"])
+def login():
+    user_name = request.json.get('user_name', None)
+    password = request.json.get('password', None)
+    if password != get_password(user_name):
+        return jsonify({"msg": "Bad username or password"}), 401
+    # 创建access_token
+    access_token = create_access_token(identity=user_name)
+    return jsonify(access_token='Bearer ' + access_token)
 
 
 def materials_to_json(item):
@@ -39,6 +61,7 @@ def materials_to_json(item):
 
 
 @app.route("/queryMaterial", methods=['POST'])
+@jwt_required()
 def query_material():
     """
     获取物料信息
@@ -60,6 +83,7 @@ def equipments_to_json(item):
 
 
 @app.route("/queryEquipments", methods=["POST"])
+@jwt_required()
 def query_equipments():
     """
     获取设备信息
@@ -70,6 +94,7 @@ def query_equipments():
 
 
 @app.route("/add_Material", methods=["POST"])
+@jwt_required()
 def add_Material():
     """
     添加物料信息
@@ -86,6 +111,7 @@ def add_Material():
 
 
 @app.route("/add_Equipments", methods=["POST"])
+@jwt_required()
 def add_Equipments():
     """
     添加设备信息
@@ -102,6 +128,7 @@ def add_Equipments():
 
 
 @app.route("/get_data", methods=["POST"])
+@jwt_required()
 def get_data():
     """
     接收前端回传的报告内容并写入json文件中
@@ -119,6 +146,7 @@ def get_data():
 
 
 @app.route("/return_report_list", methods=["POST"])
+@jwt_required()
 def return_report_list():
     """
     返回文件夹中报告文件的列表
@@ -138,3 +166,11 @@ def return_report_json():
     filename = request.json.get('filename')
     res = read_report(path + os.path.sep + filename)
     return dumps(res, ensure_ascii=False)
+
+
+@app.route("/test_password_get", methods=["POST"])
+def test_password_get():
+    user_name = request.json.get('user_name')
+    # password = request.json.get('password')
+    res = get_password(user_name)
+    return res
