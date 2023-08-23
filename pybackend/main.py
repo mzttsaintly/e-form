@@ -7,14 +7,13 @@ import os
 from json import dumps
 import datetime
 
-from util.connect import db, Material, Equipments, User, add_material, add_equipments, queryMaterial, queryEquipments,\
-    new_user, get_password
+from util.connect import db, Material, Equipments, User, add_material, add_equipments, queryMaterial, queryEquipments, \
+    new_user, check_login, jwt
 from util.get_report import mkdir, mk_json, get_report_list, read_report
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
-from flask_jwt_extended import JWTManager
 
 basedir = os.path.abspath(os.path.dirname(__name__))
 path = os.path.join(basedir, "report")
@@ -27,10 +26,10 @@ app.config["SQLALCHEMY_ECHO"] = True
 
 app.config["JWT_SECRET_KEY"] = "test-secret-key"  # 设置JWT密钥
 
-jwt = JWTManager(app)
-
 # db方法绑定app
 db.init_app(app)
+
+jwt.init_app(app)
 
 with app.app_context():
     db.create_all()
@@ -42,10 +41,11 @@ with app.app_context():
 def login():
     user_name = request.json.get('user_name', None)
     password = request.json.get('password', None)
-    if password != get_password(user_name):
-        return jsonify({"msg": "Bad username or password"}), 401
+    user = check_login(user_name, password)
+    if not user:
+        return jsonify("用户名或密码错误"), 401
     # 创建access_token
-    access_token = create_access_token(identity=user_name)
+    access_token = create_access_token(identity=user)
     return jsonify(access_token='Bearer ' + access_token)
 
 
@@ -168,9 +168,18 @@ def return_report_json():
     return dumps(res, ensure_ascii=False)
 
 
+@app.route("/create_user", methods=["POST"])
+def create_user():
+    user_name = request.json.get('user_name')
+    password = request.json.get('password')
+    authority = request.json.get('authority')
+    res = new_user(user_name, password, authority)
+    return res
+
+
 @app.route("/test_password_get", methods=["POST"])
 def test_password_get():
     user_name = request.json.get('user_name')
-    # password = request.json.get('password')
-    res = get_password(user_name)
+    password = request.json.get('password')
+    res = check_login(user_name, password)
     return res

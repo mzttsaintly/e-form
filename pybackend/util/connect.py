@@ -1,8 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError, NoResultFound, IntegrityError
+from loguru import logger
+from werkzeug.security import generate_password_hash, check_password_hash
 
+from flask_jwt_extended import JWTManager
 # 创建对象，所有数据库方法从db取
 db = SQLAlchemy()
+
+jwt = JWTManager()
 
 
 class Material(db.Model):
@@ -31,7 +36,19 @@ class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name = db.Column(db.String(), unique=True)
-    password = db.Column(db.String())
+    password_hash = db.Column(db.String())
+    authority = db.Column(db.Integer)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    @property
+    def password(self):
+        return self.password_hash
+
+    @password.setter
+    def password(self, new_password):
+        self.password_hash = generate_password_hash(new_password)
 
 
 def add_material(material_name, material_lot, material_EOV):
@@ -70,11 +87,12 @@ def queryEquipments():
     return res
 
 
-def new_user(user_name, password):
+def new_user(user_name, password, authority):
     try:
         db.session.add(User(
             user_name=user_name,
-            password=password
+            password=password,
+            authority=authority
         ))
         db.session.commit()
     except IntegrityError:
@@ -84,10 +102,27 @@ def new_user(user_name, password):
     return "创建完成"
 
 
-def get_password(user_name):
-    try:
-        res = User.query.filter(User.user_name == user_name).one()
-    except NoResultFound:
+def check_login(user_name, password):
+    user = User.query.filter(User.user_name == user_name).one_or_none()
+    res = user.check_password(password)
+    if res:
+        return user
+    else:
         return None
-    return res.password
+
+
+# 注册一个回调函数，该函数在使用 create_access_token 创建 JWT 时将传入的任何对象作为身份，并将其转换为 JSON 可序列化格式。
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    logger.debug('user_identity_lookup', user)
+    return user.id
+
+
+# 注册一个回调函数，在访问受保护的路由时从数据库自动加载用户（current_user）。
+# 这应该在成功查找时返回任何 python 对象，或者如果查找因任何原因失败（例如，如果用户已从数据库中删除）则返回 None。
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    logger.debug('user_lookup_callback', _jwt_header, jwt_data)
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
 
