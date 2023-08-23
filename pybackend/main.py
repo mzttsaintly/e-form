@@ -11,8 +11,7 @@ from util.connect import db, Material, Equipments, User, add_material, add_equip
     new_user, check_login, jwt
 from util.get_report import mkdir, mk_json, get_report_list, read_report
 
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import create_access_token, current_user
 from flask_jwt_extended import jwt_required
 
 basedir = os.path.abspath(os.path.dirname(__name__))
@@ -50,6 +49,11 @@ def login():
 
 
 def materials_to_json(item):
+    """
+    将物料信息转换为json
+    :param item: 物料对象列表
+    :return: 物料信息json
+    """
     res_list = []
     for i in item:
         res_list.append({
@@ -61,7 +65,6 @@ def materials_to_json(item):
 
 
 @app.route("/queryMaterial", methods=['POST'])
-@jwt_required()
 def query_material():
     """
     获取物料信息
@@ -72,6 +75,11 @@ def query_material():
 
 
 def equipments_to_json(item):
+    """
+    将设备信息转换为json
+    :param item: 设备信息列表
+    :return: 设备信息json
+    """
     res_list = []
     for i in item:
         res_list.append({
@@ -83,7 +91,6 @@ def equipments_to_json(item):
 
 
 @app.route("/queryEquipments", methods=["POST"])
-@jwt_required()
 def query_equipments():
     """
     获取设备信息
@@ -117,6 +124,8 @@ def add_Equipments():
     添加设备信息
     :return: 添加的结果列表
     """
+    logger.debug('登录用户是：' + current_user.user_name)
+    logger.debug('用户权限等级为：' + str(current_user.authority))
     res_list = []
     json_list = request.json
     for js in json_list:
@@ -152,34 +161,36 @@ def return_report_list():
     返回文件夹中报告文件的列表
     :return:
     """
+    logger.debug('登录用户是：' + current_user.user_name)
+    logger.debug('用户权限等级为：' + str(current_user.authority))
     mkdir(path)
     res = get_report_list(path)
     return dumps(res, ensure_ascii=False)
 
 
 @app.route("/return_report_json", methods=["POST"])
+@jwt_required()
 def return_report_json():
     """
     返回所选文件中的json内容
     :return:
     """
+    logger.debug('登录用户是：' + current_user.user_name)
+    logger.debug('用户权限等级为：' + str(current_user.authority))
     filename = request.json.get('filename')
     res = read_report(path + os.path.sep + filename)
     return dumps(res, ensure_ascii=False)
 
 
 @app.route("/create_user", methods=["POST"])
+@jwt_required()
 def create_user():
+    """
+    新建用户
+    :return:
+    """
     user_name = request.json.get('user_name')
     password = request.json.get('password')
     authority = request.json.get('authority')
     res = new_user(user_name, password, authority)
-    return res
-
-
-@app.route("/test_password_get", methods=["POST"])
-def test_password_get():
-    user_name = request.json.get('user_name')
-    password = request.json.get('password')
-    res = check_login(user_name, password)
     return res

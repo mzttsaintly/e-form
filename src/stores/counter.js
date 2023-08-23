@@ -60,3 +60,16 @@ export const useReportStore = defineStore('report', () => {
   })
   return { reportList, reportTable }
 })
+
+// 保存登录信息
+export const useLoginStore = defineStore('login', () => {
+  const userToken = ref('')
+  function changeToken(newToken) {
+    userToken.value = newToken
+  }
+  function clearToken() {
+    userToken.value = ''
+  }
+
+  return { userToken, changeToken, clearToken }
+})

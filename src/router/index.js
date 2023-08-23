@@ -5,6 +5,16 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      name: '',
+      redirect: '/login',
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../components/login.vue'),
+    },
+    {
       path: '/addMaterial',
       name: 'addMaterial',
       component: () => import('../components/addMaterial.vue')

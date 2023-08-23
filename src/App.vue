@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView, useRouter } from 'vue-router'
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { useCellCountindStore, useEquipmentStore, useMaterialStore } from './stores/counter';
 import baseUrl from './assets/apilink.json';
 import axios from 'axios';
@@ -77,9 +77,12 @@ const SelectedRouter = (value) => {
   <el-row class="pcHeadBox"></el-row>
   <el-row class="mainBox pcWeb">
     <el-col class="sideBox" :span="3">
-      <el-menu router="true">
+      <el-menu router="true" default-active="/login">
+        <el-menu-item index="/login">
+          用户登录
+        </el-menu-item>
         <el-menu-item index="/cellCounting">
-          <el-text>细胞计数</el-text>
+          细胞计数
         </el-menu-item>
         <el-menu-item index="/materialNotarise">
           物料确认

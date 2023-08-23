@@ -3,9 +3,21 @@ import { ref, reactive, onMounted } from 'vue';
 import axios from 'axios';
 import baseUrl from '../assets/apilink.json';
 
-import { useHeightStore } from '../stores/counter';
+import { useHeightStore, useLoginStore } from '../stores/counter';
+import { storeToRefs } from 'pinia'
 
+// 从服务器获得token
+const tokenStore = useLoginStore()
+const loginToken = storeToRefs(tokenStore)
 
+// 带有token的请求头
+let TokenHeader = {
+    params: {
+
+    },
+    headers:{
+    'authorization': loginToken.userToken.value
+}}
 
 // 报告列表的代理对象
 const reportListRef = ref()
@@ -19,7 +31,7 @@ const setCurrentNone = (row) => {
 const reportList = reactive([])
 
 const getReportList = () => {
-    axios.post(baseUrl['baseUrl'] + 'return_report_list').then(
+    axios.post(baseUrl['baseUrl'] + 'return_report_list', headers={'authorization': loginToken.userToken.value}).then(
         (response) => {
             let res = response.data
             console.log(res)
@@ -81,6 +93,7 @@ const handleReport = (val) => {
 // 报告详情页是否显示
 const reportTableVisible = ref(false)
 // const reportTitle = ref('')
+
 </script>
 
 <template>

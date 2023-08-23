@@ -104,8 +104,7 @@ def new_user(user_name, password, authority):
 
 def check_login(user_name, password):
     user = User.query.filter(User.user_name == user_name).one_or_none()
-    res = user.check_password(password)
-    if res:
+    if user and user.check_password(password):
         return user
     else:
         return None
