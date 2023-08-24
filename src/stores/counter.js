@@ -70,6 +70,38 @@ export const useLoginStore = defineStore('login', () => {
   function clearToken() {
     userToken.value = ''
   }
+  function get_headers() {
+    let temp_headers = {
+      headers:{
+        'authorization': userToken.value
+    }
+    }
+    return temp_headers
+  }
+  function notarizeLogin() {
+    return userToken.value !== ''
+  }
+  return { userToken, changeToken, clearToken, get_headers, notarizeLogin }
+})
 
-  return { userToken, changeToken, clearToken }
+// 侧边导航栏是否打开
+export const useSideBarStore = defineStore('sidebar', () => {
+  const sideBarState = reactive({
+    show: false,
+    width: '50%',
+    height: '100%'
+  })
+  function handleClick() {
+    sideBarState.show = true
+  }
+  return { sideBarState, handleClick }
+})
+
+// 保存用户登录信息
+export const useUserInfoStore = defineStore('userInfo', () => {
+  const userInfo = reactive({
+    user_name: ref(''),
+    user_authority: ref(0)
+  })
+  return { userInfo }
 })

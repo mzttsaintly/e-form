@@ -107,14 +107,17 @@ def add_Material():
     添加物料信息
     :return: 添加的结果列表
     """
-    res_list = []
-    json_list = request.json
-    for js in json_list:
-        material_name = js['material_name']
-        material_lot = js['material_lot']
-        material_EOV = js['material_EOV']
-        res_list.append(add_material(material_name, material_lot, material_EOV))
-    return dumps(res_list, ensure_ascii=False)
+    if current_user.authority >= 2:
+        res_list = []
+        json_list = request.json
+        for js in json_list:
+            material_name = js['material_name']
+            material_lot = js['material_lot']
+            material_EOV = js['material_EOV']
+            res_list.append(add_material(material_name, material_lot, material_EOV))
+        return dumps(res_list, ensure_ascii=False)
+    else:
+        return '权限不足'
 
 
 @app.route("/add_Equipments", methods=["POST"])
@@ -126,14 +129,17 @@ def add_Equipments():
     """
     logger.debug('登录用户是：' + current_user.user_name)
     logger.debug('用户权限等级为：' + str(current_user.authority))
-    res_list = []
-    json_list = request.json
-    for js in json_list:
-        equipName = js['equipName']
-        equipNum = js['equipNum']
-        place = js['place']
-        res_list.append(add_equipments(equipName, equipNum, place))
-    return dumps(res_list, ensure_ascii=False)
+    if current_user.authority >= 2:
+        res_list = []
+        json_list = request.json
+        for js in json_list:
+            equipName = js['equipName']
+            equipNum = js['equipNum']
+            place = js['place']
+            res_list.append(add_equipments(equipName, equipNum, place))
+        return dumps(res_list, ensure_ascii=False)
+    else:
+        return '权限不足'
 
 
 @app.route("/get_data", methods=["POST"])
@@ -189,8 +195,23 @@ def create_user():
     新建用户
     :return:
     """
-    user_name = request.json.get('user_name')
-    password = request.json.get('password')
-    authority = request.json.get('authority')
-    res = new_user(user_name, password, authority)
-    return res
+    logger.debug('登录用户是：' + current_user.user_name)
+    logger.debug('用户权限等级为：' + str(current_user.authority))
+    if current_user.authority >= 4:
+        user_name = request.json.get('user_name')
+        password = request.json.get('password')
+        authority = request.json.get('authority')
+        res = new_user(user_name, password, authority)
+        return res
+    else:
+        return '权限不足'
+
+
+@app.route("/get_userInfo", methods=["POST"])
+@jwt_required()
+def get_userInfo():
+    res = {
+        'user_name': current_user.user_name,
+        'authority': current_user.authority
+    }
+    return dumps(res, ensure_ascii=False)

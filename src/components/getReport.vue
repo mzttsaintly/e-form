@@ -8,7 +8,8 @@ import { storeToRefs } from 'pinia'
 
 // 从服务器获得token
 const tokenStore = useLoginStore()
-const loginToken = storeToRefs(tokenStore)
+// 生成的请求头
+const gotHeaders = tokenStore.get_headers()
 
 // 报告列表的代理对象
 const reportListRef = ref()
@@ -22,10 +23,7 @@ const setCurrentNone = (row) => {
 const reportList = reactive([])
 
 const getReportList = () => {
-    axios.post(baseUrl['baseUrl'] + 'return_report_list',{}, {
-    headers:{
-    'authorization': loginToken.userToken.value
-}}).then(
+    axios.post(baseUrl['baseUrl'] + 'return_report_list',{}, gotHeaders).then(
         (response) => {
             let res = response.data
             console.log(res)

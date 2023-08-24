@@ -37,6 +37,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name = db.Column(db.String(), unique=True)
     password_hash = db.Column(db.String())
+    # 1为上传报告的权限，2为修改物料设备信息的权限，4为增加新用户的权限，可累加
     authority = db.Column(db.Integer)
 
     def check_password(self, password):
@@ -88,6 +89,13 @@ def queryEquipments():
 
 
 def new_user(user_name, password, authority):
+    """
+    创建新用户
+    :param user_name:
+    :param password:
+    :param authority:
+    :return: str,是否创建完成
+    """
     try:
         db.session.add(User(
             user_name=user_name,

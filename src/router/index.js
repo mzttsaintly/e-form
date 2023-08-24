@@ -6,6 +6,8 @@ import cellCountingVue from '../components/cellCounting.vue';
 import materialNotariseVue from '../components/materialNotarise.vue';
 import equipmentNotariseVue from '../components/equipmentNotarise.vue';
 import getReportVue from '../components/getReport.vue';
+import userInfoVue from '../components/userInfo.vue'
+import { useLoginStore } from '../stores/counter';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,7 +52,26 @@ const router = createRouter({
       name: 'getReport',
       component: getReportVue,
     },
+    {
+      path: '/userInfo',
+      name: 'userInfo',
+      component: userInfoVue,
+    }
   ]
+})
+
+router.beforeEach((to, from) => {
+  const isLogin = useLoginStore().notarizeLogin()
+  if (to.path === '/login') {
+    if (isLogin) {
+      return {path: '/userInfo'}
+    }
+  }
+  if (to.path === '/userInfo') {
+    if (isLogin === false) {
+      return {path: '/login'}
+    }
+  }
 })
 
 export default router

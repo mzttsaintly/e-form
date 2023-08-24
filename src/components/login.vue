@@ -1,10 +1,11 @@
 <script setup>
 import { reactive, ref } from 'vue';
-import { useLoginStore, useHeightStore } from '../stores/counter';
+import { useLoginStore } from '../stores/counter';
 import { storeToRefs } from 'pinia';
 import axios from 'axios';
 import baseUrl from '../assets/apilink.json';
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // 保存的token
 const tokenStore = useLoginStore()
 const loginToken = storeToRefs(tokenStore)
@@ -29,6 +30,7 @@ const login = () => {
             let res = response.data.access_token
             console.log(res)
             tokenStore.changeToken(res)
+            router.push({ path: '/userInfo' })
         }
     ).catch((err) => {
         ElMessageBox.alert(err.response.data, '发生错误', {
@@ -52,7 +54,7 @@ const login = () => {
             </el-form-item>
             <nut-button type="default" @click="resetFields(userFormRef)">清空</nut-button>
             <nut-button type="success" @click="login">登录</nut-button>
-            <nut-button type="default" @click="console.log(loginToken.userToken.value)">token</nut-button>
+            <nut-button type="default" @click="console.log(loginToken)">token</nut-button>
         </el-form>
 
     </nut-cell>
