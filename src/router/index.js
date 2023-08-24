@@ -1,5 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
-
+import { createRouter, createWebHistory } from 'vue-router';
+import loginVue from '../components/login.vue';
+import addEquipmentVue from '../components/addEquipment.vue';
+import addMaterialVue from '../components/addMaterial.vue';
+import cellCountingVue from '../components/cellCounting.vue';
+import materialNotariseVue from '../components/materialNotarise.vue';
+import equipmentNotariseVue from '../components/equipmentNotarise.vue';
+import getReportVue from '../components/getReport.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,37 +18,37 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../components/login.vue'),
+      component: loginVue,
     },
     {
       path: '/addMaterial',
       name: 'addMaterial',
-      component: () => import('../components/addMaterial.vue')
+      component: addMaterialVue,
     },
     {
       path: '/addEquipment',
       name: 'addEquipment',
-      component: () => import('../components/addEquipment.vue')
+      component: addEquipmentVue,
     },
     {
       path: '/cellCounting',
       name: 'cellCounting',
-      component: () => import('../components/cellCounting.vue')
+      component: cellCountingVue,
     },
     {
       path: '/materialNotarise',
       name: 'materialNotarise',
-      component: () => import('../components/materialNotarise.vue')
+      component: materialNotariseVue,
     },
     {
       path: '/equipmentNotarise',
       name: 'equipmentNotarise',
-      component: () => import('../components/equipmentNotarise.vue')
+      component: equipmentNotariseVue,
     },
     {
       path: '/getReport',
       name: 'getReport',
-      component: () => import('../components/getReport.vue')
+      component: getReportVue,
     },
   ]
 })

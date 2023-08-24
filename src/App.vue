@@ -65,6 +65,11 @@ const navList = reactive([
     text: '查看报告',
     path: '/getReport'
   },
+  {
+    id: 5,
+    text: '登录',
+    path: '/login'
+  },
 ])
 
 const SelectedRouter = (value) => {

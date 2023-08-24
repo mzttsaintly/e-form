@@ -10,15 +10,6 @@ import { storeToRefs } from 'pinia'
 const tokenStore = useLoginStore()
 const loginToken = storeToRefs(tokenStore)
 
-// 带有token的请求头
-let TokenHeader = {
-    params: {
-
-    },
-    headers:{
-    'authorization': loginToken.userToken.value
-}}
-
 // 报告列表的代理对象
 const reportListRef = ref()
 
@@ -31,7 +22,10 @@ const setCurrentNone = (row) => {
 const reportList = reactive([])
 
 const getReportList = () => {
-    axios.post(baseUrl['baseUrl'] + 'return_report_list', headers={'authorization': loginToken.userToken.value}).then(
+    axios.post(baseUrl['baseUrl'] + 'return_report_list',{}, {
+    headers:{
+    'authorization': loginToken.userToken.value
+}}).then(
         (response) => {
             let res = response.data
             console.log(res)
@@ -57,7 +51,10 @@ const reportTable = reactive({
 
 const getReportTable = (filename) => {
     let getReportValue = { filename: filename }
-    axios.post(baseUrl['baseUrl'] + 'return_report_json', getReportValue).then(
+    axios.post(baseUrl['baseUrl'] + 'return_report_json', getReportValue, {
+    headers:{
+    'authorization': loginToken.userToken.value
+}}).then(
         (response) => {
             // console.log(response.data)
             let res = JSON.parse(response.data)
