@@ -102,7 +102,7 @@ const inoculumSize = useInoculumStore().inoculumSize
 
 // 自动计算平均密度
 const inoculumDensity = computed(() => {
-    return totalCellCount.value / (inoculumSize.fivelayer * 875 + inoculumSize.tenlayer * 6320 + inoculumSize.T150 * 150)
+    return totalCellCount.value / (inoculumSize.fivelayer * 875 + inoculumSize.tenlayer * 6230 + inoculumSize.T150 * 150)
 })
 
 onMounted(() => {
@@ -113,7 +113,7 @@ onMounted(() => {
 <template>
     <el-scrollbar :height="useHeightStore().scrollbarHeight">
         <!-- <el-col class="countInput"> -->
-            <nut-divider>在此输入计数结果</nut-divider>
+        <nut-divider>在此输入计数结果</nut-divider>
         <el-scrollbar :height="'500px'">
             <el-form class="cellCouted" :model="cellCounted" label-position="top">
                 <el-form-item v-for="(item, index) in cellCounted" :key="index">
@@ -174,13 +174,24 @@ onMounted(() => {
                         <span>可以种多少瓶培养瓶(向上取整)</span>
                     </div>
                 </template>
-                <el-tag>五层培养瓶：{{ fiveLayer }}个</el-tag>
-                <el-divider direction="vertical" />
-                <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}个</el-tag>
-                <el-divider direction="vertical" />
-                <el-tag class="ml-2" type="warning">T150：{{ T150 }}个</el-tag>
-            </el-card>
+                <el-row>
+                    <!-- <el-tag>五层培养瓶：{{ fiveLayer }}个</el-tag> -->
+                    <el-col :span="6">
+                        <el-statistic title="五层培养瓶：" :value="fiveLayer" suffix="个"></el-statistic>
+                    </el-col>
 
+                    <el-col :span="6">
+                        <el-statistic title="十层工厂：" :value="tenLayer" suffix="个"></el-statistic>
+                    </el-col>
+                    <!-- <el-tag class="ml-2" type="success">十层工厂：{{ tenLayer }}个</el-tag> -->
+
+                    <el-col :span="6">
+                        <el-statistic title="T150：" :value="T150" suffix="个"></el-statistic>
+                    </el-col>
+                    <!-- <el-tag class="ml-2" type="warning">T150：{{ T150 }}个</el-tag> -->
+                </el-row>
+            </el-card>
+            <el-divider />
             <el-card>
                 <template #header>
                     <div class="card-header">
@@ -191,14 +202,15 @@ onMounted(() => {
                     <el-form-item label="五层培养瓶：(875平方厘米)">
                         <el-input-number v-model="inoculumSize.fivelayer" :step="1" step-strictly min="0"></el-input-number>
                     </el-form-item>
-                    <el-form-item label="十层细胞工厂：(6320平方厘米)">
+                    <el-form-item label="十层细胞工厂：(6230平方厘米)">
                         <el-input-number v-model="inoculumSize.tenlayer" :step="1" step-strictly min="0"></el-input-number>
                     </el-form-item>
                     <el-form-item label="T150培养瓶:(150平方厘米)">
                         <el-input-number v-model="inoculumSize.T150" :step="1" step-strictly min="0"></el-input-number>
                     </el-form-item>
                 </el-form>
-                <el-tag>平均密度：{{ inoculumDensity }} 个/平方厘米</el-tag>
+                <!-- <el-tag>平均密度：{{ inoculumDensity }} 个/平方厘米</el-tag> -->
+                <el-statistic title="平均密度：" :value="inoculumDensity" suffix="个/平方厘米"></el-statistic>
             </el-card>
         </el-col>
 
