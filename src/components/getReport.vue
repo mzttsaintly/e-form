@@ -4,7 +4,6 @@ import axios from 'axios';
 import baseUrl from '../assets/apilink.json';
 
 import { useHeightStore, useLoginStore } from '../stores/counter';
-import { storeToRefs } from 'pinia'
 
 // 从服务器获得token
 const tokenStore = useLoginStore()
@@ -73,7 +72,12 @@ const getReportTable = (filename) => {
 
 // 组件加载时的钩子函数，获取报告列表
 onMounted(() => {
-    getReportList()
+    if (tokenStore.notarizeLogin()) {
+        getReportList()
+    } else {
+        ElMessageBox.alert('请先登录', '未登录', )
+    }
+    
 })
 
 // 选中列表项目时

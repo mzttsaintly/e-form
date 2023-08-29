@@ -1,6 +1,6 @@
 <script setup>
 import { useUserInfoStore, useLoginStore } from '../stores/counter';
-import { onMounted } from 'vue';
+import { onMounted, reactive, ref, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -32,9 +32,42 @@ const logout = () => {
 onMounted(() => {
     get_userInfo()
 })
+
+// 创建新用户
+const new_authority = ref([])
+
+const newUser = reactive({
+    user_name: ref(''),
+    password: ref(''),
+    authority: computed(() => {
+        let res = 0
+        new_authority.value.forEach(element => {
+            res += element
+        });
+        return res;
+    })
+})
+
+const create_user_url = baseUrl['baseUrl'] + 'create_user'
+
+const create_user = () => {
+    axios.post(create_user_url, newUser, gotHeaders).then(
+        (response) => {
+            ElMessageBox.alert(response.data, '创建结果', {
+            confirmButtonText: 'OK',
+        })
+        }
+    ).catch((err) => {
+        ElMessageBox.alert(err.response.data, '发生错误', {
+            confirmButtonText: 'OK',
+        })
+        console.log(err)
+    })
+}
 </script>
 
 <template>
+    <nut-divider>登录信息</nut-divider>
     <nut-cell>
         <el-input v-model="userInfo.user_name" disabled>
             <template #prepend>用户名：</template>
@@ -44,6 +77,28 @@ onMounted(() => {
             <template #prepend>权限等级：</template>
         </el-input>
 
-        <nut-button type="primary" @click="logout">退出登录</nut-button>
+
     </nut-cell>
+    <nut-button type="primary" @click="logout">退出登录</nut-button>
+    <nut-divider>创建新用户</nut-divider>
+
+
+    <el-input v-model="newUser.user_name">
+        <template #prepend>用户名：</template>
+    </el-input>
+
+    <el-input v-model="newUser.user_authority" show-password>
+        <template #prepend>密码：</template>
+    </el-input>
+
+    <el-checkbox-group v-model="new_authority">
+        <el-checkbox :label="1">写记录</el-checkbox>
+        <el-checkbox :label="2">修改物料、设备信息</el-checkbox>
+        <el-checkbox :label="4">新增用户</el-checkbox>
+    </el-checkbox-group>
+
+    <nut-button type="success" @click="create_user">创建新用户</nut-button>
+
+    {{ new_authority }}
+    {{ newUser.authority }}
 </template>

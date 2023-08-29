@@ -23,7 +23,7 @@ app.config["JSON_AS_ASCII"] = False
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SQLALCHEMY_ECHO"] = True
 
-app.config["JWT_SECRET_KEY"] = "test-secret-key"  # 设置JWT密钥
+app.config["JWT_SECRET_KEY"] = "test-secret-key"  # 设置JWT密钥，正式运行时请将其改成随机生成的字符串
 
 # db方法绑定app
 db.init_app(app)
