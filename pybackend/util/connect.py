@@ -118,6 +118,48 @@ def check_login(user_name, password):
         return None
 
 
+def update_material(material_id, **kwargs):
+    """
+    修改物料信息
+    :param material_id: 需修改的物料条目id
+    :param kwargs: 需修改的内容
+    :return:
+    """
+    Material.query.filter(Material.id == material_id).update(kwargs)
+    db.session.commit()
+
+
+def del_material(material_id):
+    """
+    删除选定物料
+    :param material_id: 需删除的物料条目id
+    :return:
+    """
+    Material.query.filter(Material.id == material_id).delete()
+    db.session.commit()
+
+
+def update_equipments(equipments_id, **kwargs):
+    """
+    修改设备信息
+    :param equipments_id: 需修改的设备条目id
+    :param kwargs: 修改的内容
+    :return:
+    """
+    Equipments.query.filter(Equipments.id == equipments_id).update(kwargs)
+    db.session.commit()
+
+
+def del_equipment(equipments_id):
+    """
+    删除设备信息
+    :param equipments_id: 需删除的设备条目id
+    :return:
+    """
+    Equipments.query.filter(Equipments.id == equipments_id).delete()
+    db.session.commit()
+
+
 # 注册一个回调函数，该函数在使用 create_access_token 创建 JWT 时将传入的任何对象作为身份，并将其转换为 JSON 可序列化格式。
 @jwt.user_identity_loader
 def user_identity_lookup(user):

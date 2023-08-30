@@ -7,8 +7,12 @@ import os
 from json import dumps
 import datetime
 
+# 数据库增加、查询相关
 from util.connect import db, Material, Equipments, User, add_material, add_equipments, queryMaterial, queryEquipments, \
     new_user, check_login, jwt
+# 数据库删除、修改相关
+from util.connect import update_material, del_material, update_equipments, del_equipment
+# 获取报告相关
 from util.get_report import mkdir, mk_json, get_report_list, read_report
 
 from flask_jwt_extended import create_access_token, current_user
@@ -57,6 +61,7 @@ def materials_to_json(item):
     res_list = []
     for i in item:
         res_list.append({
+            'id': i.id,
             'material_name': i.material_name,
             'material_lot': i.material_lot,
             'material_EOV': i.material_EOV
@@ -83,6 +88,7 @@ def equipments_to_json(item):
     res_list = []
     for i in item:
         res_list.append({
+            'id': i.id,
             'equipName': i.equipName,
             'equipNum': i.equipNum,
             'place': i.place
@@ -116,6 +122,20 @@ def add_Material():
             material_EOV = js['material_EOV']
             res_list.append(add_material(material_name, material_lot, material_EOV))
         return dumps(res_list, ensure_ascii=False)
+    else:
+        return '权限不足'
+
+
+@app.route("/modify_material", methods=["POST"])
+@jwt_required()
+def modify_material():
+    if current_user.authority >= 2:
+        json_list = request.json
+        id = json_list['id']
+        material_name = json_list['material_name']
+        material_lot = json_list['material_lot']
+        material_EOV = json_list['material_EOV']
+        update_material(id, material_name=material_name, material_lot=material_lot, material_EOV=material_EOV)
     else:
         return '权限不足'
 
