@@ -48,14 +48,10 @@ const reportTable = reactive({
 
 const getReportTable = (filename) => {
     let getReportValue = { filename: filename }
-    axios.post(baseUrl['baseUrl'] + 'return_report_json', getReportValue, {
-    headers:{
-    'authorization': loginToken.userToken.value
-}}).then(
+    axios.post(baseUrl['baseUrl'] + 'return_report_json', getReportValue, gotHeaders).then(
         (response) => {
             // console.log(response.data)
             let res = JSON.parse(response.data)
-
             reportTable.uploadMaterial = res.uploadMaterial
             reportTable.uploadEquipment = res.uploadEquipment
             reportTable.uploadCells = res.uploadCells

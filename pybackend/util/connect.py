@@ -129,7 +129,7 @@ def update_material(material_id, **kwargs):
     db.session.commit()
 
 
-def del_material(material_id):
+def del_material(material_id: int):
     """
     删除选定物料
     :param material_id: 需删除的物料条目id

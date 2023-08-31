@@ -235,3 +235,14 @@ def get_userInfo():
         'authority': current_user.authority
     }
     return dumps(res, ensure_ascii=False)
+
+
+@app.route("/use_del_material", methods=["POST"])
+@jwt_required()
+def use_del_material():
+    if current_user.authority >= 4:
+        del_id = request.json.get('id')
+        del_material(del_id)
+        return '删除成功'
+    else:
+        return '权限不足'
