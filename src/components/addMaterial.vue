@@ -4,6 +4,7 @@ import axios from 'axios';
 import baseUrl from '../assets/apilink.json'
 
 import { useLoginStore, useHeightStore } from '../stores/counter';
+import { ElMessageBox } from 'element-plus';
 
 // 从服务器获得token
 const tokenStore = useLoginStore()
@@ -101,6 +102,48 @@ const delMaterial = async (id) => {
 onMounted(async () => {
     await getSeverData()
 })
+
+// 需编辑的行所在的index
+const editIndex = ref(-1)
+
+// 设置将要编辑的行index
+const handleEdit = async (row) => {
+    if (editIndex.value !== row.id) {
+        editIndex.value = row.id
+    } else {
+        let tempInfo = {
+            material_name: row.material_name,
+            material_lot: row.material_lot,
+            material_EOV: row.material_EOV
+        }
+        ElMessageBox.confirm(`物料名称:${tempInfo.material_name},物料批号:${tempInfo.material_lot},有效期/复验期:${tempInfo.material_EOV}`, '确认修改', {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+            type: 'warning',
+        }).then(async () => {
+            console.log(tempInfo)
+            await modifyMaterial()
+            await getSeverData()
+        }).catch(async () => {
+            await getSeverData()
+        })
+        editIndex.value = -1
+        
+    }
+
+}
+
+// 修改条目
+const modifyUrl = baseUrl['baseUrl'] + 'update_material'
+
+const modifyMaterial = async (modifyInfo) => {
+    await axios.post(modifyUrl, modifyInfo, gotHeaders).then((response) => {
+        ElMessage(response)
+    }).catch((err) => {
+        console.log(err)
+        ElMessage(err)
+    })
+}
 </script>
 
 <template>
@@ -109,31 +152,45 @@ onMounted(async () => {
             <el-scrollbar :height="useHeightStore().scrollbarHeight">
                 <el-table :data="severData">
                     <el-table-column prop="id" label="ID" sortable></el-table-column>
-                    <el-table-column prop="material_name" label="物料名称" sortable></el-table-column>
-                    <el-table-column prop="material_lot" label="物料批号" sortable></el-table-column>
-                    <el-table-column prop="material_EOV" label="有效期/复验期" sortable></el-table-column>
+                    <el-table-column prop="material_name" label="物料名称" sortable>
+                        <template v-slot="editRow">
+                            <span v-show="editRow.row.id !== editIndex">{{ editRow.row.material_name }}</span>
+                            <el-input v-show="editRow.row.id === editIndex" v-model="editRow.row.material_name"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="material_lot" label="物料批号" sortable>
+                        <template v-slot="editRow">
+                            <span v-show="editRow.row.id !== editIndex">{{ editRow.row.material_lot }}</span>
+                            <el-input v-show="editRow.row.id === editIndex" v-model="editRow.row.material_lot"></el-input>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="有效期/复验期" sortable>
+                        <template v-slot="editRow">
+                            <span v-show="editRow.row.id !== editIndex">{{ editRow.row.material_EOV }}</span>
+                            <el-input v-show="editRow.row.id === editIndex" v-model="editRow.row.material_EOV"></el-input>
+                        </template>
+                    </el-table-column>
+
                     <el-table-column label="操作">
                         <template v-slot="operation_material">
-                            <el-tooltip content="修改内容">
-                                <el-button @click="console.log(operation_material.row.id)">
-                                    <el-icon>
-                                        <EditPen />
-                                    </el-icon>
-                                </el-button>
-                            </el-tooltip>
+                            <el-button @click="handleEdit(operation_material.row)">
+                                <el-icon>
+                                    <EditPen v-show="operation_material.row.id !== editIndex" />
+                                    <Select v-show="operation_material.row.id === editIndex"></Select>
+                                </el-icon>
+                            </el-button>
 
                             <el-tooltip content="删除条目">
                                 <el-button type="danger" @click="verifyDelMaterial(operation_material.row.id)"><el-icon>
                                         <CloseBold />
                                     </el-icon></el-button>
                             </el-tooltip>
-
-                            <!-- {{ operation_material.row.id }} -->
                         </template>
                     </el-table-column>
                 </el-table>
             </el-scrollbar>
-
         </nut-tab-pane>
 
         <nut-tab-pane title="物料信息录入">
