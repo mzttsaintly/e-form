@@ -131,11 +131,13 @@ def add_Material():
 def modify_material():
     if current_user.authority >= 2:
         json_list = request.json
-        id = json_list['id']
+        material_id = json_list['material_id']
         material_name = json_list['material_name']
         material_lot = json_list['material_lot']
         material_EOV = json_list['material_EOV']
-        update_material(id, material_name=material_name, material_lot=material_lot, material_EOV=material_EOV)
+        update_material(material_id=material_id, material_name=material_name,
+                        material_lot=material_lot, material_EOV=material_EOV)
+        return '修改完成'
     else:
         return '权限不足'
 
@@ -240,9 +242,14 @@ def get_userInfo():
 @app.route("/use_del_material", methods=["POST"])
 @jwt_required()
 def use_del_material():
+    """
+    删除物料信息
+    :return:
+    """
     if current_user.authority >= 4:
         del_id = request.json.get('id')
         del_material(del_id)
         return '删除成功'
     else:
         return '权限不足'
+

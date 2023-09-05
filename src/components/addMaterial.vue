@@ -112,6 +112,7 @@ const handleEdit = async (row) => {
         editIndex.value = row.id
     } else {
         let tempInfo = {
+            material_id: row.id,
             material_name: row.material_name,
             material_lot: row.material_lot,
             material_EOV: row.material_EOV
@@ -122,7 +123,7 @@ const handleEdit = async (row) => {
             type: 'warning',
         }).then(async () => {
             console.log(tempInfo)
-            await modifyMaterial()
+            await modifyMaterial(tempInfo)
             await getSeverData()
         }).catch(async () => {
             await getSeverData()
@@ -134,11 +135,11 @@ const handleEdit = async (row) => {
 }
 
 // 修改条目
-const modifyUrl = baseUrl['baseUrl'] + 'update_material'
+const modifyUrl = baseUrl['baseUrl'] + 'modify_material'
 
 const modifyMaterial = async (modifyInfo) => {
     await axios.post(modifyUrl, modifyInfo, gotHeaders).then((response) => {
-        ElMessage(response)
+        ElMessage(response.data)
     }).catch((err) => {
         console.log(err)
         ElMessage(err)

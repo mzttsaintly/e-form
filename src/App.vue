@@ -106,10 +106,10 @@ const sideBarState = useSideBarStore().sideBarState
           查看记录
         </el-menu-item>
         <el-menu-item index="/addMaterial">
-          新增物料
+          物料管理
         </el-menu-item>
         <el-menu-item index="/addEquipment">
-          新增设备
+          设备管理
         </el-menu-item>
       </el-menu>
     </el-col>
@@ -143,9 +143,9 @@ const sideBarState = useSideBarStore().sideBarState
 
     <nut-side-navbar-item ikey="4" title="查看记录" @click="router.push({ path: '/getReport' })"></nut-side-navbar-item>
 
-    <nut-side-navbar-item ikey="5" title="新增物料" @click="router.push({ path: '/addMaterial' })"></nut-side-navbar-item>
+    <nut-side-navbar-item ikey="5" title="物料管理" @click="router.push({ path: '/addMaterial' })"></nut-side-navbar-item>
 
-    <nut-side-navbar-item ikey="6" title="新增设备" @click="router.push({ path: '/addEquipment' })"></nut-side-navbar-item>
+    <nut-side-navbar-item ikey="6" title="设备管理" @click="router.push({ path: '/addEquipment' })"></nut-side-navbar-item>
   </nut-popup>
 
   <nut-row class="mainBox mobileWeb">
