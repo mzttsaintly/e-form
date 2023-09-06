@@ -253,3 +253,33 @@ def use_del_material():
     else:
         return '权限不足'
 
+
+@app.route("/modify_equipments", methods=["POST"])
+@jwt_required()
+def modify_equipments():
+    if current_user.authority >= 2:
+        json_list = request.json
+        equipments_id = json_list['equipments_id']
+        equipName = json_list['equipName']
+        equipNum = json_list['equipNum']
+        place = json_list['place']
+        update_equipments(equipments_id=equipments_id, equipName=equipName,
+                        equipNum=equipNum, place=place)
+        return '修改完成'
+    else:
+        return '权限不足'
+
+
+@app.route("/use_del_equipments", methods=["POST"])
+@jwt_required()
+def use_del_equipments():
+    """
+    删除物料信息
+    :return:
+    """
+    if current_user.authority >= 4:
+        del_id = request.json.get('id')
+        del_equipment(del_id)
+        return '删除成功'
+    else:
+        return '权限不足'
