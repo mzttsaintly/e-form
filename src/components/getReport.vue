@@ -22,7 +22,7 @@ const setCurrentNone = (row) => {
 const reportList = reactive([])
 
 const getReportList = () => {
-    axios.post(baseUrl['baseUrl'] + 'return_report_list',{}, gotHeaders).then(
+    axios.post(baseUrl['baseUrl'] + 'return_report_list', {}, gotHeaders).then(
         (response) => {
             let res = response.data
             console.log(res)
@@ -71,9 +71,9 @@ onMounted(() => {
     if (tokenStore.notarizeLogin()) {
         getReportList()
     } else {
-        ElMessageBox.alert('请先登录', '未登录', )
+        ElMessageBox.alert('请先登录', '未登录',)
     }
-    
+
 })
 
 // 选中列表项目时
@@ -95,40 +95,38 @@ const reportTableVisible = ref(false)
     <el-scrollbar :height="useHeightStore().scrollbarHeight">
         <!-- {{ reportList }} -->
         <el-table :data="reportList" highlight-current-row @current-change="handleReport" ref="reportListRef">
-            <el-table-column type="index" label="序号" width="100" />
+            <el-table-column type="index" label="序号"  width="100%"/>
             <el-table-column prop="name" label="报告名称"></el-table-column>
         </el-table>
         <!-- {{ reportTable }} -->
     </el-scrollbar>
 
     <!-- 报告详情页 -->
-    <el-dialog id="printBox" v-model="reportTableVisible" @close="setCurrentNone()" width="90vw">
-        <nut-divider>物料详情</nut-divider>
-        <nut-cell>
+    <el-dialog v-model="reportTableVisible" @close="setCurrentNone()" width="840px">
+        <el-card id="printBox">
+            <nut-divider>物料详情</nut-divider>
             <el-table :data="reportTable.uploadMaterial">
-                <el-table-column type="index" label="序号" width="100"></el-table-column>
+                <el-table-column type="index" label="序号" width="100%"></el-table-column>
                 <el-table-column prop="material" label="物料名称"></el-table-column>
                 <el-table-column prop="lot" label="物料批号"></el-table-column>
                 <el-table-column prop="POV" label="有效期/复验期"></el-table-column>
                 <el-table-column prop="quantity" label="数量"></el-table-column>
+                <!-- 自动生成表格 -->
+                <!-- <el-table-column v-for="(item, index) in uploadMaterial"></el-table-column> -->
             </el-table>
-        </nut-cell>
 
-        <nut-divider>设备详情</nut-divider>
-        <nut-cell>
+            <nut-divider>设备详情</nut-divider>
             <el-table :data="reportTable.uploadEquipment">
-                <el-table-column type="index" label="序号" width="100"></el-table-column>
+                <el-table-column type="index" label="序号" width="100%"></el-table-column>
                 <el-table-column prop="equipName" label="设备名称"></el-table-column>
                 <el-table-column prop="equipNum" label="设备编号"></el-table-column>
                 <el-table-column prop="place" label="登记位置"></el-table-column>
                 <el-table-column prop="availability" label="是否可用"></el-table-column>
             </el-table>
-        </nut-cell>
 
-        <nut-divider>细胞计数详情</nut-divider>
-        <nut-cell>
+            <nut-divider>细胞计数详情</nut-divider>
             <el-table :data="reportTable.uploadCells">
-                <el-table-column type="index" label="序号" width="100"></el-table-column>
+                <el-table-column type="index" label="序号" width="100%"></el-table-column>
                 <el-table-column prop="combinationCounted" label="细胞浓度"></el-table-column>
                 <el-table-column prop="motilityRate" label="细胞活率(%)"></el-table-column>
                 <el-table-column prop="CakingRate" label="结团率(%)"></el-table-column>
@@ -136,7 +134,7 @@ const reportTableVisible = ref(false)
                 <el-table-column prop="totalCells" label="细胞总数"></el-table-column>
                 <el-table-column prop="COV" label="变异系数(%)"></el-table-column>
             </el-table>
-        </nut-cell>
+        </el-card>
 
         <template #footer>
             <span class="dialog-footer">
@@ -148,6 +146,26 @@ const reportTableVisible = ref(false)
             </span>
         </template>
     </el-dialog>
-
-    
 </template>
+
+<style scoped>
+@media print {
+
+    html {
+        height: auto;
+        margin: 0;
+    }
+
+    #printBox table {
+        table-layout: auto !important;
+    }
+
+    #printBox el-table__header-wrapper .el-talbe__header {
+        width: 100% !important;
+    }
+
+    #printBox el-table__body-wrapper .el-talbe__body {
+        width: 100% !important;
+    }
+}
+</style>

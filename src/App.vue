@@ -1,7 +1,7 @@
 <script setup>
 import { RouterView, useRouter } from 'vue-router'
 import { reactive, ref } from 'vue';
-import { useCellCountindStore, useEquipmentStore, useMaterialStore, useSideBarStore } from './stores/counter';
+import { useCellCountindStore, useEquipmentStore, useMaterialStore, useSideBarStore, useLoginStore } from './stores/counter';
 import baseUrl from './assets/apilink.json';
 import axios from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
@@ -13,13 +13,18 @@ const uploadData = reactive({
   uploadCells: useCellCountindStore().cellCounted
 })
 
+// 从服务器获得token
+const tokenStore = useLoginStore()
+// 生成的请求头
+const gotHeaders = tokenStore.get_headers()
+
 // 上传url
 const uploadUrl = baseUrl['baseUrl'] + 'get_data'
 
 // 上传数据的方法
 const upload = () => {
   console.log(uploadData)
-  axios.post(uploadUrl, uploadData).then(
+  axios.post(uploadUrl, uploadData, gotHeaders).then(
     (response) => {
       console.log(response.data)
       ElMessageBox.alert(response.data, '上传结果', {

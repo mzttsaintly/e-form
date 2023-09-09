@@ -103,10 +103,10 @@ onMounted(async () => {
     await getSeverData()
 })
 
-// 需编辑的行所在的index
+// 需编辑的行所在的id
 const editIndex = ref(-1)
 
-// 设置将要编辑的行index
+// 设置将要编辑的行id
 const handleEdit = async (row) => {
     if (editIndex.value !== row.id) {
         editIndex.value = row.id
@@ -124,11 +124,11 @@ const handleEdit = async (row) => {
         }).then(async () => {
             console.log(tempInfo)
             await modifyMaterial(tempInfo)
-            await getSeverData()
+            await getSeverData()  // 重新请求数据，刷新表格内容
         }).catch(async () => {
-            await getSeverData()
+            await getSeverData()  // 重新请求数据，刷新表格内容
         })
-        editIndex.value = -1
+        editIndex.value = -1  // 无论如何都会退出编辑状态
         
     }
 
